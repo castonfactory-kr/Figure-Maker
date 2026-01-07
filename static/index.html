@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character & Figure AI - Tech Demo</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Character & Figure AI</h1>
+            <p class="subtitle">AI 기반 캐릭터 변환 및 3D 피규어 생성 서비스</p>
+        </header>
+
+        <main>
+            <section class="upload-section">
+                <h2>1. 인물 사진 업로드</h2>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="imageInput" accept="image/*" hidden>
+                    <div class="upload-content">
+                        <div class="upload-icon">📷</div>
+                        <p>클릭하거나 이미지를 드래그하세요</p>
+                        <p class="upload-hint">JPG, PNG (최대 10MB)</p>
+                    </div>
+                    <img id="previewImage" class="preview-image hidden" alt="Preview">
+                </div>
+            </section>
+
+            <section class="style-section">
+                <h2>2. 캐릭터 스타일 선택</h2>
+                <div class="style-grid" id="styleGrid">
+                    <button class="style-btn active" data-style="sd_character">
+                        <span class="style-icon">🎮</span>
+                        <span class="style-name">SD 캐릭터 (치비)</span>
+                    </button>
+                    <button class="style-btn" data-style="anime">
+                        <span class="style-icon">🌸</span>
+                        <span class="style-name">애니메이션</span>
+                    </button>
+                    <button class="style-btn" data-style="semi_realistic">
+                        <span class="style-icon">🎬</span>
+                        <span class="style-name">반실사 (Pixar)</span>
+                    </button>
+                    <button class="style-btn" data-style="pixel_art">
+                        <span class="style-icon">👾</span>
+                        <span class="style-name">픽셀 아트</span>
+                    </button>
+                    <button class="style-btn" data-style="cartoon">
+                        <span class="style-icon">🎨</span>
+                        <span class="style-name">카툰 스타일</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="action-section">
+                <button id="transformBtn" class="primary-btn" disabled>
+                    캐릭터 변환하기
+                </button>
+            </section>
+
+            <section class="result-section hidden" id="resultSection">
+                <h2>3. 변환 결과</h2>
+                <div class="result-container">
+                    <div class="result-card">
+                        <h3>원본 이미지</h3>
+                        <img id="originalResult" alt="Original">
+                    </div>
+                    <div class="result-arrow">→</div>
+                    <div class="result-card">
+                        <h3>캐릭터 이미지</h3>
+                        <img id="characterResult" alt="Character">
+                    </div>
+                </div>
+                <div class="download-actions">
+                    <a id="downloadCharacter" class="secondary-btn" download>캐릭터 이미지 다운로드</a>
+                    <button id="generate3DBtn" class="primary-btn">3D 모델 생성하기</button>
+                </div>
+            </section>
+
+            <section class="model-section hidden" id="modelSection">
+                <h2>4. 3D 모델 생성</h2>
+                <div class="model-status" id="modelStatus">
+                    <div class="loading-spinner"></div>
+                    <p id="modelStatusText">3D 모델 생성 중...</p>
+                </div>
+                <div class="model-result hidden" id="modelResult">
+                    <p>3D 모델이 생성되었습니다!</p>
+                    <div id="modelLinks"></div>
+                </div>
+            </section>
+        </main>
+
+        <section class="api-docs">
+            <h2>API Documentation</h2>
+            <div class="api-card">
+                <h3>REST API Endpoints</h3>
+                <div class="endpoint">
+                    <code>GET /api/transform/styles</code>
+                    <p>사용 가능한 스타일 목록 조회</p>
+                </div>
+                <div class="endpoint">
+                    <code>POST /api/transform/character</code>
+                    <p>인물 사진을 캐릭터로 변환 (multipart/form-data: image, style)</p>
+                </div>
+                <div class="endpoint">
+                    <code>GET /api/transform/image/{image_id}</code>
+                    <p>생성된 캐릭터 이미지 조회</p>
+                </div>
+                <div class="endpoint">
+                    <code>POST /api/transform/3d-model</code>
+                    <p>캐릭터 이미지에서 3D 모델 생성 (form-data: image_id)</p>
+                </div>
+                <div class="endpoint">
+                    <code>GET /api/transform/3d-model/status/{task_id}</code>
+                    <p>3D 모델 생성 상태 조회</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Character & Figure AI - Tech Demo | Multi-platform API Service</p>
+            <p class="footer-note">iOS, Android, PC, 즉석사진관 연동 지원</p>
+        </footer>
+    </div>
+
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner large"></div>
+            <p id="loadingText">처리 중...</p>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
