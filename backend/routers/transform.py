@@ -65,18 +65,40 @@ async def get_generated_image(image_id: str):
     return FileResponse(image_path, media_type="image/png")
 
 
+def get_public_base_url() -> str:
+    if os.environ.get("BASE_PUBLIC_URL"):
+        return os.environ.get("BASE_PUBLIC_URL")
+    
+    dev_domain = os.environ.get("REPLIT_DEV_DOMAIN")
+    if dev_domain:
+        return f"https://{dev_domain}"
+    
+    domains = os.environ.get("REPLIT_DOMAINS")
+    if domains:
+        primary_domain = domains.split(",")[0].strip()
+        return f"https://{primary_domain}"
+    
+    return None
+
+
 @router.post("/3d-model")
 async def create_3d_model(image_id: str = Form(...)):
     image_path = os.path.join(GENERATED_IMAGES_DIR, f"{image_id}.png")
     if not os.path.exists(image_path):
         raise HTTPException(status_code=404, detail="Source image not found")
     
-    host = os.environ.get("REPL_SLUG", "localhost")
-    domain = os.environ.get("REPLIT_DEV_DOMAIN", f"{host}:5000")
-    image_url = f"https://{domain}/api/transform/image/{image_id}"
+    base_url = get_public_base_url()
+    if not base_url:
+        return {
+            "status": "error",
+            "message": "Public URL not available. Set BASE_PUBLIC_URL environment variable for non-Replit environments."
+        }
+    
+    image_url = f"{base_url}/api/transform/image/{image_id}"
     
     try:
         result = await meshy_service.create_3d_model_from_image(image_url, name=f"character_{image_id}")
+        result["image_url_used"] = image_url
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"3D model creation failed: {str(e)}")
