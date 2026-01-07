@@ -16,12 +16,13 @@ openai_client = OpenAI(
 
 def is_rate_limit_error(exception: BaseException) -> bool:
     error_msg = str(exception)
+    status_code = getattr(exception, "status_code", None)
     return (
         "429" in error_msg
         or "RATELIMIT_EXCEEDED" in error_msg
         or "quota" in error_msg.lower()
         or "rate limit" in error_msg.lower()
-        or (hasattr(exception, "status_code") and exception.status_code == 429)
+        or status_code == 429
     )
 
 
@@ -76,8 +77,10 @@ def transform_to_character(image_bytes: bytes, style: str = "sd_character") -> b
                 size="1024x1024"
             )
         
-        image_base64 = response.data[0].b64_json or ""
-        return base64.b64decode(image_base64)
+        if response.data and len(response.data) > 0:
+            image_base64 = response.data[0].b64_json or ""
+            return base64.b64decode(image_base64)
+        raise ValueError("No image data returned from API")
     finally:
         os.unlink(tmp_path)
 

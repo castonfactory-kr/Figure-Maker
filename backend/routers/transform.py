@@ -65,9 +65,10 @@ async def get_generated_image(image_id: str):
     return FileResponse(image_path, media_type="image/png")
 
 
-def get_public_base_url() -> str:
-    if os.environ.get("BASE_PUBLIC_URL"):
-        return os.environ.get("BASE_PUBLIC_URL")
+def get_public_base_url() -> Optional[str]:
+    base_url = os.environ.get("BASE_PUBLIC_URL")
+    if base_url:
+        return base_url
     
     dev_domain = os.environ.get("REPLIT_DEV_DOMAIN")
     if dev_domain:
@@ -98,7 +99,8 @@ async def create_3d_model(image_id: str = Form(...)):
     
     try:
         result = await meshy_service.create_3d_model_from_image(image_url, name=f"character_{image_id}")
-        result["image_url_used"] = image_url
+        if result:
+            result["image_url_used"] = image_url
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"3D model creation failed: {str(e)}")
