@@ -3,15 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Character & Figure AI - Tech Demo</title>
+    <title>Character AI - 인물 사진 캐릭터화 서비스</title>
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Character & Figure AI</h1>
-            <p class="subtitle">AI 기반 캐릭터 변환 및 3D 피규어 생성 서비스</p>
+            <h1>Character AI</h1>
+            <p class="subtitle">AI 기반 인물 사진 캐릭터화 서비스</p>
+            <p class="tech-badge">Powered by Stable Diffusion</p>
         </header>
+
+        <section class="intro-section">
+            <h2>서비스 소개</h2>
+            <p>인물 사진을 업로드하면 AI가 다양한 스타일의 캐릭터 이미지로 변환해드립니다.</p>
+            <ul class="feature-list">
+                <li>SD 캐릭터 (치비) - 귀여운 2등신 캐릭터</li>
+                <li>애니메이션 - 일본 애니메이션 스타일</li>
+                <li>반실사 (Pixar) - 3D 애니메이션 스타일</li>
+                <li>픽셀 아트 - 레트로 게임 스타일</li>
+                <li>카툰 스타일 - 만화 캐릭터 스타일</li>
+            </ul>
+        </section>
+
+        <section class="status-section">
+            <div class="status-indicator" id="statusIndicator">
+                <span class="status-dot"></span>
+                <span id="statusText">Stable Diffusion 서버 연결 확인 중...</span>
+            </div>
+        </section>
 
         <main>
             <section class="upload-section">
@@ -53,14 +73,23 @@
                 </div>
             </section>
 
+            <section class="options-section">
+                <h2>3. 변환 강도 설정</h2>
+                <div class="slider-container">
+                    <label for="denoisingStrength">변환 강도: <span id="strengthValue">0.7</span></label>
+                    <input type="range" id="denoisingStrength" min="0.3" max="0.9" step="0.05" value="0.7">
+                    <p class="slider-hint">낮을수록 원본과 유사, 높을수록 스타일 강조</p>
+                </div>
+            </section>
+
             <section class="action-section">
                 <button id="transformBtn" class="primary-btn" disabled>
-                    캐릭터 변환하기
+                    캐릭터로 변환하기
                 </button>
             </section>
 
             <section class="result-section hidden" id="resultSection">
-                <h2>3. 변환 결과</h2>
+                <h2>4. 변환 결과</h2>
                 <div class="result-container">
                     <div class="result-card">
                         <h3>원본 이미지</h3>
@@ -73,53 +102,72 @@
                     </div>
                 </div>
                 <div class="download-actions">
-                    <a id="downloadCharacter" class="secondary-btn" download>캐릭터 이미지 다운로드</a>
-                    <button id="generate3DBtn" class="primary-btn">3D 모델 생성하기</button>
-                </div>
-            </section>
-
-            <section class="model-section hidden" id="modelSection">
-                <h2>4. 3D 모델 생성</h2>
-                <div class="model-status" id="modelStatus">
-                    <div class="loading-spinner"></div>
-                    <p id="modelStatusText">3D 모델 생성 중...</p>
-                </div>
-                <div class="model-result hidden" id="modelResult">
-                    <p>3D 모델이 생성되었습니다!</p>
-                    <div id="modelLinks"></div>
+                    <a id="downloadCharacter" class="primary-btn" download>캐릭터 이미지 다운로드</a>
                 </div>
             </section>
         </main>
 
         <section class="api-docs">
-            <h2>API Documentation</h2>
+            <h2>REST API Documentation</h2>
+            <p class="api-intro">이 서비스는 REST API를 통해 iOS, Android, PC 등 다양한 플랫폼에서 연동할 수 있습니다.</p>
+            
             <div class="api-card">
-                <h3>REST API Endpoints</h3>
+                <h3>API Endpoints</h3>
+                
                 <div class="endpoint">
                     <code>GET /api/transform/styles</code>
-                    <p>사용 가능한 스타일 목록 조회</p>
+                    <p>사용 가능한 캐릭터 스타일 목록을 조회합니다.</p>
                 </div>
+                
                 <div class="endpoint">
                     <code>POST /api/transform/character</code>
-                    <p>인물 사진을 캐릭터로 변환 (multipart/form-data: image, style)</p>
+                    <p>인물 사진을 캐릭터 이미지로 변환합니다.</p>
+                    <div class="params">
+                        <strong>Parameters (multipart/form-data):</strong>
+                        <ul>
+                            <li><code>image</code> - 인물 이미지 파일 (필수)</li>
+                            <li><code>style</code> - 스타일 ID (기본값: sd_character)</li>
+                            <li><code>denoising_strength</code> - 변환 강도 0.3~0.9 (기본값: 0.7)</li>
+                        </ul>
+                    </div>
                 </div>
+                
                 <div class="endpoint">
                     <code>GET /api/transform/image/{image_id}</code>
-                    <p>생성된 캐릭터 이미지 조회</p>
+                    <p>생성된 캐릭터 이미지를 조회합니다.</p>
                 </div>
+                
                 <div class="endpoint">
-                    <code>POST /api/transform/3d-model</code>
-                    <p>캐릭터 이미지에서 3D 모델 생성 (form-data: image_id)</p>
+                    <code>GET /api/transform/health</code>
+                    <p>Stable Diffusion 서버 연결 상태를 확인합니다.</p>
                 </div>
-                <div class="endpoint">
-                    <code>GET /api/transform/3d-model/status/{task_id}</code>
-                    <p>3D 모델 생성 상태 조회</p>
+            </div>
+        </section>
+
+        <section class="tech-section">
+            <h2>기술 구성</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <h4>Backend</h4>
+                    <p>Python FastAPI</p>
+                </div>
+                <div class="tech-item">
+                    <h4>AI Engine</h4>
+                    <p>Stable Diffusion (img2img)</p>
+                </div>
+                <div class="tech-item">
+                    <h4>API Protocol</h4>
+                    <p>REST API (JSON)</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Platform</h4>
+                    <p>Cross-platform (VPS)</p>
                 </div>
             </div>
         </section>
 
         <footer>
-            <p>Character & Figure AI - Tech Demo | Multi-platform API Service</p>
+            <p>Character AI - 인물 사진 캐릭터화 서비스 Tech Demo</p>
             <p class="footer-note">iOS, Android, PC, 즉석사진관 연동 지원</p>
         </footer>
     </div>
@@ -127,7 +175,8 @@
     <div class="loading-overlay hidden" id="loadingOverlay">
         <div class="loading-content">
             <div class="loading-spinner large"></div>
-            <p id="loadingText">처리 중...</p>
+            <p id="loadingText">AI가 캐릭터를 생성하고 있습니다...</p>
+            <p class="loading-hint">Stable Diffusion 처리 중 (약 10-30초 소요)</p>
         </div>
     </div>
 

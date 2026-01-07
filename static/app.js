@@ -1,4 +1,4 @@
- 젲document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const uploadArea = document.getElementById('uploadArea');
     const imageInput = document.getElementById('imageInput');
     const previewImage = document.getElementById('previewImage');
@@ -9,17 +9,43 @@
     const originalResult = document.getElementById('originalResult');
     const characterResult = document.getElementById('characterResult');
     const downloadCharacter = document.getElementById('downloadCharacter');
-    const generate3DBtn = document.getElementById('generate3DBtn');
-    const modelSection = document.getElementById('modelSection');
-    const modelStatus = document.getElementById('modelStatus');
-    const modelStatusText = document.getElementById('modelStatusText');
-    const modelResult = document.getElementById('modelResult');
     const loadingOverlay = document.getElementById('loadingOverlay');
     const loadingText = document.getElementById('loadingText');
+    const statusIndicator = document.getElementById('statusIndicator');
+    const statusDot = statusIndicator.querySelector('.status-dot');
+    const statusText = document.getElementById('statusText');
+    const denoisingSlider = document.getElementById('denoisingStrength');
+    const strengthValue = document.getElementById('strengthValue');
 
     let selectedFile = null;
     let selectedStyle = 'sd_character';
-    let currentImageId = null;
+
+    checkSDConnection();
+
+    async function checkSDConnection() {
+        try {
+            const response = await fetch('/api/transform/health');
+            const data = await response.json();
+            
+            if (data.status === 'connected') {
+                statusDot.classList.add('connected');
+                statusDot.classList.remove('error');
+                statusText.textContent = `Stable Diffusion 서버 연결됨 (${data.models_available}개 모델)`;
+            } else {
+                statusDot.classList.add('error');
+                statusDot.classList.remove('connected');
+                statusText.textContent = `Stable Diffusion 서버 연결 실패: ${data.message || '알 수 없는 오류'}`;
+            }
+        } catch (error) {
+            statusDot.classList.add('error');
+            statusDot.classList.remove('connected');
+            statusText.textContent = 'Stable Diffusion 서버에 연결할 수 없습니다';
+        }
+    }
+
+    denoisingSlider.addEventListener('input', (e) => {
+        strengthValue.textContent = e.target.value;
+    });
 
     uploadArea.addEventListener('click', () => imageInput.click());
 
@@ -81,6 +107,7 @@
         const formData = new FormData();
         formData.append('image', selectedFile);
         formData.append('style', selectedStyle);
+        formData.append('denoising_strength', denoisingSlider.value);
 
         try {
             const response = await fetch('/api/transform/character', {
@@ -90,13 +117,12 @@
 
             if (!response.ok) {
                 const error = await response.json();
-                throw new Error(error.detail || 'Transformation failed');
+                throw new Error(error.detail || '변환에 실패했습니다');
             }
 
             const data = await response.json();
-            currentImageId = data.image_id;
 
-            originalResult.src = previewImage.src;
+            originalResult.src = data.original_url;
             characterResult.src = data.image_url;
             downloadCharacter.href = data.image_url;
             downloadCharacter.download = `character_${data.image_id}.png`;
@@ -110,86 +136,6 @@
             hideLoading();
         }
     });
-
-    generate3DBtn.addEventListener('click', async () => {
-        if (!currentImageId) return;
-
-        modelSection.classList.remove('hidden');
-        modelStatus.classList.remove('hidden');
-        modelResult.classList.add('hidden');
-        modelSection.scrollIntoView({ behavior: 'smooth' });
-
-        const formData = new FormData();
-        formData.append('image_id', currentImageId);
-
-        try {
-            const response = await fetch('/api/transform/3d-model', {
-                method: 'POST',
-                body: formData
-            });
-
-            const data = await response.json();
-
-            if (data.status === 'demo_mode') {
-                modelStatusText.textContent = 'Demo 모드: Meshy API 키가 설정되지 않았습니다.';
-                setTimeout(() => {
-                    modelResult.innerHTML = `
-                        <p>3D 모델 생성을 위해 Meshy API 키가 필요합니다.</p>
-                        <p class="api-note">실제 서비스에서는 이 단계에서 3D 모델 파일(.glb, .fbx)이 생성됩니다.</p>
-                    `;
-                    modelResult.classList.remove('hidden');
-                    modelStatus.classList.add('hidden');
-                }, 2000);
-                return;
-            }
-
-            if (data.status === 'processing') {
-                pollModelStatus(data.task_id);
-            } else {
-                modelStatusText.textContent = '오류: ' + (data.message || '알 수 없는 오류');
-            }
-
-        } catch (error) {
-            modelStatusText.textContent = '3D 모델 생성 시작 실패: ' + error.message;
-        }
-    });
-
-    async function pollModelStatus(taskId) {
-        const checkStatus = async () => {
-            try {
-                const response = await fetch(`/api/transform/3d-model/status/${taskId}`);
-                const data = await response.json();
-
-                if (data.status === 'SUCCEEDED') {
-                    modelStatus.classList.add('hidden');
-                    
-                    let linksHtml = '<div class="model-links">';
-                    if (data.model_urls) {
-                        for (const [format, url] of Object.entries(data.model_urls)) {
-                            linksHtml += `<a href="${url}" class="secondary-btn" download>${format.toUpperCase()} 다운로드</a> `;
-                        }
-                    }
-                    linksHtml += '</div>';
-                    
-                    if (data.thumbnail_url) {
-                        linksHtml = `<img src="${data.thumbnail_url}" alt="3D Model Preview" style="max-width: 200px; border-radius: 8px; margin-bottom: 1rem;">` + linksHtml;
-                    }
-                    
-                    document.getElementById('modelLinks').innerHTML = linksHtml;
-                    modelResult.classList.remove('hidden');
-                } else if (data.status === 'FAILED') {
-                    modelStatusText.textContent = '3D 모델 생성 실패';
-                } else {
-                    modelStatusText.textContent = `3D 모델 생성 중... (${data.progress || 0}%)`;
-                    setTimeout(checkStatus, 5000);
-                }
-            } catch (error) {
-                modelStatusText.textContent = '상태 확인 실패: ' + error.message;
-            }
-        };
-
-        checkStatus();
-    }
 
     function showLoading(text) {
         loadingText.textContent = text;

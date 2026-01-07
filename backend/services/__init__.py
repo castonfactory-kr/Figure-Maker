@@ -1,2 +1,1 @@
-from . import openai_service
-from . import meshy_service
+from . import stable_diffusion_service
