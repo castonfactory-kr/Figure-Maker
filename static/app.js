@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+ 젲document.addEventListener('DOMContentLoaded', () => {
     const uploadArea = document.getElementById('uploadArea');
     const imageInput = document.getElementById('imageInput');
     const previewImage = document.getElementById('previewImage');
