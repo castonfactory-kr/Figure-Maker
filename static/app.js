@@ -16,11 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusText = document.getElementById('statusText');
     const denoisingSlider = document.getElementById('denoisingStrength');
     const strengthValue = document.getElementById('strengthValue');
+    const galleryGrid = document.getElementById('galleryGrid');
+    const galleryEmpty = document.getElementById('galleryEmpty');
 
     let selectedFile = null;
     let selectedStyle = 'sd_character';
 
     checkSDConnection();
+    loadGallery();
 
     async function checkSDConnection() {
         try {
@@ -40,6 +43,32 @@ document.addEventListener('DOMContentLoaded', () => {
             statusDot.classList.add('error');
             statusDot.classList.remove('connected');
             statusText.textContent = 'Stable Diffusion 서버에 연결할 수 없습니다';
+        }
+    }
+
+    async function loadGallery() {
+        try {
+            const response = await fetch('/api/transform/gallery');
+            const data = await response.json();
+            
+            if (data.images && data.images.length > 0) {
+                galleryEmpty.classList.add('hidden');
+                galleryGrid.innerHTML = '';
+                
+                data.images.forEach(img => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.innerHTML = `
+                        <img src="${img.url}" alt="Generated character" loading="lazy">
+                        <div class="gallery-item-info">
+                            <span class="gallery-style">${img.style || 'unknown'}</span>
+                        </div>
+                    `;
+                    galleryGrid.appendChild(item);
+                });
+            }
+        } catch (error) {
+            console.log('Gallery load failed:', error);
         }
     }
 
@@ -129,6 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             resultSection.classList.remove('hidden');
             resultSection.scrollIntoView({ behavior: 'smooth' });
+
+            loadGallery();
 
         } catch (error) {
             alert('캐릭터 변환 실패: ' + error.message);

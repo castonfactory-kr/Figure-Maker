@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse
 from typing import Optional
 
 from backend.config import settings
-from backend.services.stable_diffusion_service import sd_service
+from backend.services.stable_diffusion_service import sd_service, CHARACTER_STYLES
 
 router = APIRouter(prefix="/api/transform", tags=["transform"])
 
@@ -38,7 +38,10 @@ def get_mime_from_extension(ext: str) -> str:
 
 @router.get("/styles")
 async def list_styles():
-    return {"styles": sd_service.get_available_styles()}
+    return {
+        "styles": sd_service.get_available_styles(),
+        "recommended_strength": sd_service.get_recommended_strength()
+    }
 
 
 @router.get("/health")
@@ -46,11 +49,49 @@ async def check_sd_connection():
     return await sd_service.check_connection()
 
 
+@router.get("/gallery")
+async def get_gallery():
+    images = []
+    generated_dir = settings.GENERATED_IMAGES_DIR
+    
+    if os.path.exists(generated_dir):
+        files = []
+        for filename in os.listdir(generated_dir):
+            if filename.endswith('.png'):
+                filepath = os.path.join(generated_dir, filename)
+                files.append((filename, os.path.getmtime(filepath)))
+        
+        files.sort(key=lambda x: x[1], reverse=True)
+        
+        for filename, _ in files[:20]:
+            image_id = filename.replace('.png', '')
+            meta_path = os.path.join(generated_dir, f"{image_id}.json")
+            style = "unknown"
+            
+            if os.path.exists(meta_path):
+                try:
+                    with open(meta_path, 'r') as f:
+                        meta = json.load(f)
+                        style_key = meta.get("style", "unknown")
+                        if style_key in CHARACTER_STYLES:
+                            style = CHARACTER_STYLES[style_key]["name"]
+                except Exception:
+                    pass
+            
+            images.append({
+                "id": image_id,
+                "url": f"/api/transform/image/{image_id}",
+                "style": style
+            })
+    
+    return {"images": images}
+
+
 @router.post("/character")
 async def transform_character(
     image: UploadFile = File(...),
     style: str = Form(default="sd_character"),
-    denoising_strength: float = Form(default=0.7)
+    denoising_strength: float = Form(default=0.42)
 ):
     if not image.content_type or not image.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="파일은 이미지여야 합니다")
@@ -89,6 +130,14 @@ async def transform_character(
         
         async with aiofiles.open(result_path, "wb") as f:
             await f.write(result_bytes)
+        
+        result_meta_path = os.path.join(settings.GENERATED_IMAGES_DIR, f"{result_id}.json")
+        async with aiofiles.open(result_meta_path, "w") as f:
+            await f.write(json.dumps({
+                "style": style,
+                "denoising_strength": denoising_strength,
+                "original_id": original_id
+            }))
         
         return {
             "success": True,

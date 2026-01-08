@@ -19,9 +19,8 @@
             <p>인물 사진을 업로드하면 AI가 다양한 스타일의 캐릭터 이미지로 변환해드립니다.</p>
             <ul class="feature-list">
                 <li>SD 캐릭터 (치비) - 귀여운 2등신 캐릭터</li>
+                <li>반실사 (3D) - 3D 애니메이션 스타일</li>
                 <li>애니메이션 - 일본 애니메이션 스타일</li>
-                <li>반실사 (Pixar) - 3D 애니메이션 스타일</li>
-                <li>픽셀 아트 - 레트로 게임 스타일</li>
                 <li>카툰 스타일 - 만화 캐릭터 스타일</li>
             </ul>
         </section>
@@ -54,17 +53,13 @@
                         <span class="style-icon">🎮</span>
                         <span class="style-name">SD 캐릭터 (치비)</span>
                     </button>
+                    <button class="style-btn" data-style="semi_realistic">
+                        <span class="style-icon">🎬</span>
+                        <span class="style-name">반실사 (3D)</span>
+                    </button>
                     <button class="style-btn" data-style="anime">
                         <span class="style-icon">🌸</span>
                         <span class="style-name">애니메이션</span>
-                    </button>
-                    <button class="style-btn" data-style="semi_realistic">
-                        <span class="style-icon">🎬</span>
-                        <span class="style-name">반실사 (Pixar)</span>
-                    </button>
-                    <button class="style-btn" data-style="pixel_art">
-                        <span class="style-icon">👾</span>
-                        <span class="style-name">픽셀 아트</span>
                     </button>
                     <button class="style-btn" data-style="cartoon">
                         <span class="style-icon">🎨</span>
@@ -76,9 +71,10 @@
             <section class="options-section">
                 <h2>3. 변환 강도 설정</h2>
                 <div class="slider-container">
-                    <label for="denoisingStrength">변환 강도: <span id="strengthValue">0.7</span></label>
-                    <input type="range" id="denoisingStrength" min="0.3" max="0.9" step="0.05" value="0.7">
+                    <label for="denoisingStrength">변환 강도: <span id="strengthValue">0.42</span></label>
+                    <input type="range" id="denoisingStrength" min="0.3" max="0.9" step="0.01" value="0.42">
                     <p class="slider-hint">낮을수록 원본과 유사, 높을수록 스타일 강조</p>
+                    <p class="recommended-hint">추천값: 0.42 (원본 특징 유지하면서 캐릭터화)</p>
                 </div>
             </section>
 
@@ -107,6 +103,14 @@
             </section>
         </main>
 
+        <section class="gallery-section">
+            <h2>생성된 이미지 갤러리</h2>
+            <p class="gallery-intro">기술 데모에서 생성된 캐릭터 이미지들입니다.</p>
+            <div class="gallery-grid" id="galleryGrid">
+                <p class="gallery-empty" id="galleryEmpty">아직 생성된 이미지가 없습니다.</p>
+            </div>
+        </section>
+
         <section class="api-docs">
             <h2>REST API Documentation</h2>
             <p class="api-intro">이 서비스는 REST API를 통해 iOS, Android, PC 등 다양한 플랫폼에서 연동할 수 있습니다.</p>
@@ -127,7 +131,7 @@
                         <ul>
                             <li><code>image</code> - 인물 이미지 파일 (필수)</li>
                             <li><code>style</code> - 스타일 ID (기본값: sd_character)</li>
-                            <li><code>denoising_strength</code> - 변환 강도 0.3~0.9 (기본값: 0.7)</li>
+                            <li><code>denoising_strength</code> - 변환 강도 0.3~0.9 (추천값: 0.42)</li>
                         </ul>
                     </div>
                 </div>
@@ -176,7 +180,7 @@
         <div class="loading-content">
             <div class="loading-spinner large"></div>
             <p id="loadingText">AI가 캐릭터를 생성하고 있습니다...</p>
-            <p class="loading-hint">Stable Diffusion 처리 중 (약 10-30초 소요)</p>
+            <p class="loading-hint">Stable Diffusion 처리 중 (약 30-60초 소요)</p>
         </div>
     </div>
 
