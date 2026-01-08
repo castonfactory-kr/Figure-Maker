@@ -193,7 +193,6 @@ async def get_original_image(image_id: str):
 
 
 @router.delete("/image/{image_id}")
-@router.post("/image/{image_id}/delete")
 async def delete_generated_image(image_id: str):
     image_path = os.path.join(settings.GENERATED_IMAGES_DIR, f"{image_id}.png")
     meta_path = os.path.join(settings.GENERATED_IMAGES_DIR, f"{image_id}.json")
