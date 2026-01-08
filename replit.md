@@ -67,5 +67,7 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 5000
 이 서비스는 별도의 Stable Diffusion 서버가 필요합니다.
 AUTOMATIC1111 WebUI를 `--api` 옵션으로 실행하세요:
 ```bash
-./webui.sh --api --listen --port 7860
+./webui.sh --api --listen --port 17860
 ```
+
+**참고**: 한국 가정용 ISP는 8080 등 일반 포트를 차단할 수 있습니다. 17860 같은 비표준 포트 사용을 권장합니다.
