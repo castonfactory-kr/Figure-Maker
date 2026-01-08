@@ -18,12 +18,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const strengthValue = document.getElementById('strengthValue');
     const galleryGrid = document.getElementById('galleryGrid');
     const galleryEmpty = document.getElementById('galleryEmpty');
+    const imageModal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    const modalStyle = document.getElementById('modalStyle');
+    const modalDownload = document.getElementById('modalDownload');
+    const modalDelete = document.getElementById('modalDelete');
+    const modalClose = document.getElementById('modalClose');
 
     let selectedFile = null;
     let selectedStyle = 'sd_character';
+    let currentImageId = null;
 
     checkSDConnection();
     loadGallery();
+    setupModal();
 
     async function checkSDConnection() {
         try {
@@ -64,11 +72,65 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span class="gallery-style">${img.style || 'unknown'}</span>
                         </div>
                     `;
+                    item.addEventListener('click', () => openModal(img.id, img.url, img.style));
                     galleryGrid.appendChild(item);
                 });
+            } else {
+                galleryEmpty.classList.remove('hidden');
+                galleryGrid.innerHTML = '';
+                galleryGrid.appendChild(galleryEmpty);
             }
         } catch (error) {
             console.log('Gallery load failed:', error);
+        }
+    }
+
+    function setupModal() {
+        modalClose.addEventListener('click', closeModal);
+        imageModal.addEventListener('click', (e) => {
+            if (e.target === imageModal) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+        modalDelete.addEventListener('click', deleteCurrentImage);
+    }
+
+    function openModal(imageId, imageUrl, style) {
+        currentImageId = imageId;
+        modalImage.src = imageUrl;
+        modalStyle.textContent = style || 'unknown';
+        modalDownload.href = imageUrl;
+        modalDownload.download = `character_${imageId}.png`;
+        imageModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        imageModal.classList.add('hidden');
+        document.body.style.overflow = '';
+        currentImageId = null;
+    }
+
+    async function deleteCurrentImage() {
+        if (!currentImageId) return;
+        
+        if (!confirm('이 이미지를 삭제하시겠습니까?')) return;
+        
+        try {
+            const response = await fetch(`/api/transform/image/${currentImageId}`, {
+                method: 'DELETE'
+            });
+            
+            if (response.ok) {
+                closeModal();
+                loadGallery();
+            } else {
+                const error = await response.json();
+                alert('삭제 실패: ' + (error.detail || '알 수 없는 오류'));
+            }
+        } catch (error) {
+            alert('삭제 중 오류가 발생했습니다: ' + error.message);
         }
     }
 

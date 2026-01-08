@@ -190,3 +190,20 @@ async def get_original_image(image_id: str):
             raise HTTPException(status_code=404, detail="원본 이미지를 찾을 수 없습니다")
     
     return FileResponse(image_path, media_type=mime_type)
+
+
+@router.delete("/image/{image_id}")
+async def delete_generated_image(image_id: str):
+    image_path = os.path.join(settings.GENERATED_IMAGES_DIR, f"{image_id}.png")
+    meta_path = os.path.join(settings.GENERATED_IMAGES_DIR, f"{image_id}.json")
+    
+    if not os.path.exists(image_path):
+        raise HTTPException(status_code=404, detail="이미지를 찾을 수 없습니다")
+    
+    try:
+        os.remove(image_path)
+        if os.path.exists(meta_path):
+            os.remove(meta_path)
+        return {"success": True, "message": "이미지가 삭제되었습니다"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"삭제 실패: {str(e)}")

@@ -520,6 +520,109 @@ footer {
     border-radius: 12px;
 }
 
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    padding: 2rem;
+}
+
+.modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    background: rgba(30, 30, 50, 0.95);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    z-index: 10;
+}
+
+.modal-close:hover {
+    opacity: 1;
+}
+
+.modal-content img {
+    max-width: 100%;
+    max-height: 60vh;
+    border-radius: 12px;
+    object-fit: contain;
+}
+
+.modal-info {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.modal-style {
+    color: #a5b4fc;
+    font-size: 1rem;
+    background: rgba(102, 126, 234, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.modal-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.modal-btn.download-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+}
+
+.modal-btn.download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.modal-btn.delete-btn {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid #ef4444;
+}
+
+.modal-btn.delete-btn:hover {
+    background: #ef4444;
+    color: #fff;
+}
+
+.gallery-item {
+    cursor: pointer;
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 1rem;
@@ -539,5 +642,19 @@ footer {
 
     .style-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .modal-content {
+        padding: 1rem;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .modal-btn {
+        width: 100%;
+        text-align: center;
     }
 }
