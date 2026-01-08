@@ -118,8 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm('이 이미지를 삭제하시겠습니까?')) return;
         
         try {
-            const response = await fetch(`/api/transform/image/${currentImageId}`, {
-                method: 'DELETE'
+            const response = await fetch(`/api/transform/image/${currentImageId}/delete`, {
+                method: 'POST'
             });
             
             if (response.ok) {
