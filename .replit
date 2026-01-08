@@ -22,14 +22,23 @@ args = "Character AI Server"
 name = "Character AI Server"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python -m uvicorn backend.main:app --host 0.0.0.0 --port 5000"
-waitForPort = 5000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python -m uvicorn app.main:app --host 0.0.0.0 --port 5000"
+waitForPort = 5000
 
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+STABLE_DIFFUSION_BASE_URL = "http://117.123.119.55:8080"
+SD_DEFAULT_STEPS = "45"
+SD_DEFAULT_CFG_SCALE = "24.0"
+SD_DEFAULT_SAMPLER = "Euler a"
+SD_DEFAULT_MODEL = "v1-5-pruned-emaonly"

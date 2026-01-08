@@ -4,10 +4,9 @@ import json
 import aiofiles
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from fastapi.responses import FileResponse
-from typing import Optional
 
-from backend.config import settings
-from backend.services.stable_diffusion_service import sd_service, CHARACTER_STYLES
+from app.config import settings
+from app.services.stable_diffusion import sd_service, CHARACTER_STYLES
 
 router = APIRouter(prefix="/api/transform", tags=["transform"])
 

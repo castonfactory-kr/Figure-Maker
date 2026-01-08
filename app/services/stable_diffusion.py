@@ -3,7 +3,7 @@ import httpx
 from typing import Optional
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception
 
-from backend.config import settings
+from app.config import settings
 
 
 def is_connection_error(exception: BaseException) -> bool:
@@ -58,8 +58,7 @@ class StableDiffusionService:
         headers = {"Content-Type": "application/json"}
         if self.api_key:
             if ":" in self.api_key:
-                import base64 as b64
-                credentials = b64.b64encode(self.api_key.encode()).decode()
+                credentials = base64.b64encode(self.api_key.encode()).decode()
                 headers["Authorization"] = f"Basic {credentials}"
             else:
                 headers["Authorization"] = f"Bearer {self.api_key}"

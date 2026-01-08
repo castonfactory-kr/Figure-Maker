@@ -7,7 +7,7 @@ AI 기반 인물 이미지 캐릭터 변환 서비스 (기술 데모)
 
 ### 주요 기능
 - **이미지 캐릭터화**: Stable Diffusion img2img를 사용하여 인물 사진을 캐릭터 이미지로 변환
-- **다양한 스타일**: SD 캐릭터, 애니메이션, 반실사, 픽셀 아트, 카툰 스타일 지원
+- **4가지 스타일**: SD 캐릭터, 반실사(3D), 애니메이션, 카툰 스타일 지원
 - **REST API**: iOS, Android, PC, 즉석사진관 등 멀티플랫폼 연동 가능
 
 ### 지원 플랫폼
@@ -16,13 +16,15 @@ AI 기반 인물 이미지 캐릭터 변환 서비스 (기술 데모)
 
 ## Project Structure
 ```
-├── backend/
+├── app/
 │   ├── main.py                 # FastAPI 앱 진입점
 │   ├── config.py               # 환경 설정 (Pydantic Settings)
-│   ├── routers/
+│   ├── models/                 # 데이터 모델
+│   │   └── schemas.py
+│   ├── routers/                # API 라우터
 │   │   └── transform.py        # 이미지 변환 API 엔드포인트
-│   └── services/
-│       └── stable_diffusion_service.py  # SD API 연동 서비스
+│   └── services/               # 비즈니스 로직
+│       └── stable_diffusion.py # SD API 연동 서비스
 ├── static/
 │   ├── index.html              # 웹 데모 UI
 │   ├── styles.css              # 스타일시트
@@ -38,16 +40,17 @@ AI 기반 인물 이미지 캐릭터 변환 서비스 (기술 데모)
 - `POST /api/transform/character` - 인물 사진 캐릭터화
 - `GET /api/transform/image/{image_id}` - 생성된 이미지 조회
 - `GET /api/transform/original/{image_id}` - 원본 이미지 조회
+- `GET /api/transform/gallery` - 생성된 이미지 갤러리
 - `GET /api/transform/health` - Stable Diffusion 서버 연결 상태
 
 ## Environment Variables
-환경 변수는 `.env` 파일에서 관리됩니다. `.env.example`을 참고하세요.
+환경 변수는 Replit Secrets 또는 `.env` 파일에서 관리됩니다.
 
 - `STABLE_DIFFUSION_BASE_URL` - Stable Diffusion API 서버 주소
 - `STABLE_DIFFUSION_API_KEY` - API 인증 키 (선택사항)
-- `SD_DEFAULT_STEPS` - 기본 샘플링 스텝 수
-- `SD_DEFAULT_CFG_SCALE` - 기본 CFG Scale
-- `PORT` - 서버 포트
+- `SD_DEFAULT_STEPS` - 기본 샘플링 스텝 수 (기본: 45)
+- `SD_DEFAULT_CFG_SCALE` - 기본 CFG Scale (기본: 24)
+- `SD_DEFAULT_SAMPLER` - 기본 샘플러 (기본: Euler a)
 
 ## Tech Stack
 - Python 3.11 + FastAPI
@@ -57,7 +60,7 @@ AI 기반 인물 이미지 캐릭터 변환 서비스 (기술 데모)
 
 ## Running the App
 ```bash
-python -m uvicorn backend.main:app --host 0.0.0.0 --port 5000
+python -m uvicorn app.main:app --host 0.0.0.0 --port 5000
 ```
 
 ## Stable Diffusion Server

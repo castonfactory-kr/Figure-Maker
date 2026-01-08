@@ -19,17 +19,19 @@ class Settings(BaseSettings):
     
     SD_DEFAULT_MODEL: str = "v1-5-pruned-emaonly"
     SD_DEFAULT_SAMPLER: str = "Euler a"
-    SD_DEFAULT_STEPS: int = 30
-    SD_DEFAULT_CFG_SCALE: float = 7.0
+    SD_DEFAULT_STEPS: int = 45
+    SD_DEFAULT_CFG_SCALE: float = 24.0
     
     UPLOAD_DIR: str = "uploads"
     GENERATED_IMAGES_DIR: str = "generated_images"
     MAX_FILE_SIZE_MB: int = 10
     
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = True
+    model_config = {
+        "env_file": ".env",
+        "env_file_encoding": "utf-8",
+        "case_sensitive": True,
+        "extra": "ignore"
+    }
 
 
 settings = Settings()
