@@ -112,6 +112,14 @@
             } else {
                 paymentTitle.textContent = '결제 대기중';
                 paymentMessage.textContent = '스마트폰의 간편결제 화면에서 결제를 진행해주세요';
+                
+                setTimeout(() => {
+                    paymentSpinner.classList.add('hidden');
+                    completeIcon.classList.remove('hidden');
+                    paymentTitle.textContent = '결제가 완료되었습니다';
+                    paymentMessage.textContent = '캐릭터 생성을 시작합니다';
+                    closePaymentBtn.classList.remove('hidden');
+                }, 3000);
             }
         }
     </script>
