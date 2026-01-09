@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalClose = document.getElementById('modalClose');
 
     let selectedFile = null;
-    let selectedStyle = 'sd_character';
+    let selectedStyle = 'real_bubblehead';
     let currentImageId = null;
 
     checkSDConnection();

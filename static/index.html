@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Character AI - 인물 사진 캐릭터화 서비스</title>
+    <title>CastAI - AI 캐릭터 변환 서비스</title>
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Character AI</h1>
+            <h1>CastAI</h1>
             <p class="subtitle">AI 기반 인물 사진 캐릭터화 서비스</p>
             <p class="tech-badge">Powered by Stable Diffusion</p>
         </header>
@@ -18,10 +18,9 @@
             <h2>서비스 소개</h2>
             <p>인물 사진을 업로드하면 AI가 다양한 스타일의 캐릭터 이미지로 변환해드립니다.</p>
             <ul class="feature-list">
-                <li>SD 캐릭터 (치비) - 귀여운 2등신 캐릭터</li>
+                <li>리얼 (버블헤드) - 실사풍 큰 머리 캐릭터</li>
                 <li>반실사 (3D) - 3D 애니메이션 스타일</li>
-                <li>애니메이션 - 일본 애니메이션 스타일</li>
-                <li>카툰 스타일 - 만화 캐릭터 스타일</li>
+                <li>캐릭터 - 동화풍 캐릭터 스타일</li>
             </ul>
         </section>
 
@@ -49,21 +48,17 @@
             <section class="style-section">
                 <h2>2. 캐릭터 스타일 선택</h2>
                 <div class="style-grid" id="styleGrid">
-                    <button class="style-btn active" data-style="sd_character">
-                        <span class="style-icon">🎮</span>
-                        <span class="style-name">SD 캐릭터 (치비)</span>
+                    <button class="style-btn active" data-style="real_bubblehead">
+                        <span class="style-icon">🎭</span>
+                        <span class="style-name">리얼 (버블헤드)</span>
                     </button>
                     <button class="style-btn" data-style="semi_realistic">
                         <span class="style-icon">🎬</span>
                         <span class="style-name">반실사 (3D)</span>
                     </button>
-                    <button class="style-btn" data-style="anime">
-                        <span class="style-icon">🌸</span>
-                        <span class="style-name">애니메이션</span>
-                    </button>
-                    <button class="style-btn" data-style="cartoon">
-                        <span class="style-icon">🎨</span>
-                        <span class="style-name">카툰 스타일</span>
+                    <button class="style-btn" data-style="character">
+                        <span class="style-icon">✨</span>
+                        <span class="style-name">캐릭터</span>
                     </button>
                 </div>
             </section>
@@ -111,43 +106,6 @@
             </div>
         </section>
 
-        <section class="api-docs">
-            <h2>REST API Documentation</h2>
-            <p class="api-intro">이 서비스는 REST API를 통해 iOS, Android, PC 등 다양한 플랫폼에서 연동할 수 있습니다.</p>
-            
-            <div class="api-card">
-                <h3>API Endpoints</h3>
-                
-                <div class="endpoint">
-                    <code>GET /api/transform/styles</code>
-                    <p>사용 가능한 캐릭터 스타일 목록을 조회합니다.</p>
-                </div>
-                
-                <div class="endpoint">
-                    <code>POST /api/transform/character</code>
-                    <p>인물 사진을 캐릭터 이미지로 변환합니다.</p>
-                    <div class="params">
-                        <strong>Parameters (multipart/form-data):</strong>
-                        <ul>
-                            <li><code>image</code> - 인물 이미지 파일 (필수)</li>
-                            <li><code>style</code> - 스타일 ID (기본값: sd_character)</li>
-                            <li><code>denoising_strength</code> - 변환 강도 0.3~0.9 (추천값: 0.42)</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="endpoint">
-                    <code>GET /api/transform/image/{image_id}</code>
-                    <p>생성된 캐릭터 이미지를 조회합니다.</p>
-                </div>
-                
-                <div class="endpoint">
-                    <code>GET /api/transform/health</code>
-                    <p>Stable Diffusion 서버 연결 상태를 확인합니다.</p>
-                </div>
-            </div>
-        </section>
-
         <section class="tech-section">
             <h2>기술 구성</h2>
             <div class="tech-grid">
@@ -171,8 +129,10 @@
         </section>
 
         <footer>
-            <p>Character AI - 인물 사진 캐릭터화 서비스 Tech Demo</p>
-            <p class="footer-note">iOS, Android, PC, 즉석사진관 연동 지원</p>
+            <p class="footer-brand">CastAI - AI 캐릭터 변환 서비스</p>
+            <p class="footer-company">Cast on factory</p>
+            <p class="footer-social">Instagram: @caston_factory</p>
+            <p class="footer-note">iOS, Android, PC, 포토부스 키오스크 연동 지원</p>
         </footer>
     </div>
 

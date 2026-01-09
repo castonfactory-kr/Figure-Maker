@@ -19,29 +19,23 @@ def is_connection_error(exception: BaseException) -> bool:
 NEGATIVE_PROMPT_BASE = "worst quality,low quality,low contrast,blurry,low quality,medium quality,watermark,username,signature,text,bad anatomy,bad hands,error,missing fingers,extra digit,fewer digits,cropped,jpeg artifacts,bad feet,extra fingers,mutated hands,poorly drawn hands,bad proportions,extra limbs,disfigured,bad anatomy,gross proportions,malformed limbs,missing arms,missing legs,extra arms,extra legs,mutated hands,fused fingers,too many fingers,long neck,sign,blurry,underwear,sexy,lewd,nsfw,exhibitionism,no body,no legs,no hands,missing body parts,unhuman,monster,nohands,amputee,cosplay,unrealistic items"
 
 CHARACTER_STYLES = {
-    "sd_character": {
-        "name": "SD 캐릭터 (치비)",
-        "name_en": "SD Character (Chibi)",
-        "description": "귀여운 2등신 캐릭터",
-        "prompt": "full figure,from head to feet,full body,posing,cute,chibi,super deformed,big head small body,kawaii,anime,figure,well-tailored,high definition,4k,high quality"
+    "real_bubblehead": {
+        "name": "리얼 (버블헤드)",
+        "name_en": "Real (Bubble Head)",
+        "description": "실사풍 큰 머리 캐릭터",
+        "prompt": "full figure,from head to feet,full body,posing,bubble head,big head small body,realistic skin texture,photorealistic style,cute proportions,well-tailored,high definition,4k,high quality"
     },
     "semi_realistic": {
         "name": "반실사 (3D)",
         "name_en": "Semi-Realistic (3D)",
         "description": "3D 애니메이션 스타일",
-        "prompt": "full figure,from head to feet,full body,posing,3d rendered character,semi realistic,stylized,smooth skin,expressive eyes,high quality 3d art,well-tailored,high definition,4k,high quality"
+        "prompt": "full figure,from head to feet,full body,posing,3d rendered character,semi realistic,stylized,smooth skin,expressive eyes,pixar style,high quality 3d art,well-tailored,high definition,4k,high quality"
     },
-    "anime": {
-        "name": "애니메이션",
-        "name_en": "Anime Style",
-        "description": "일본 애니메이션 스타일",
-        "prompt": "full figure,from head to feet,full body,posing,anime style,beautiful anime character,cel shaded,expressive anime eyes,detailed hair,high quality anime art,well-tailored,high definition,4k,high quality"
-    },
-    "cartoon": {
-        "name": "카툰 스타일",
-        "name_en": "Cartoon Style",
-        "description": "만화 캐릭터 스타일",
-        "prompt": "full figure,from head to feet,full body,posing,cartoon style,bold outlines,vibrant colors,exaggerated features,fun character design,comic book style,high contrast,well-tailored,high definition,4k,high quality"
+    "character": {
+        "name": "캐릭터",
+        "name_en": "Character",
+        "description": "동화풍 캐릭터 스타일",
+        "prompt": "full figure,from head to feet,full body,posing,fairy tale style,magical character,enchanting,storybook illustration,whimsical,expressive eyes,vibrant colors,well-tailored,high definition,4k,high quality"
     }
 }
 

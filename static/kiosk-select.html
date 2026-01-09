@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastAI - 스타일 선택</title>
+    <link rel="stylesheet" href="/static/kiosk.css">
+</head>
+<body class="kiosk-body">
+    <div class="kiosk-container">
+        <header class="kiosk-header">
+            <h1>CastAI</h1>
+            <p>원하시는 캐릭터 스타일을 선택해주세요</p>
+        </header>
+
+        <div class="kiosk-styles">
+            <div class="kiosk-style-card" data-style="real_bubblehead">
+                <div class="style-preview">
+                    <div class="style-icon-large">🎭</div>
+                </div>
+                <div class="style-info">
+                    <h2>리얼 (버블헤드)</h2>
+                    <p>실사풍 큰 머리 캐릭터</p>
+                </div>
+                <div class="style-check hidden">
+                    <span>✓</span>
+                </div>
+            </div>
+
+            <div class="kiosk-style-card" data-style="semi_realistic">
+                <div class="style-preview">
+                    <div class="style-icon-large">🎬</div>
+                </div>
+                <div class="style-info">
+                    <h2>반실사 (3D)</h2>
+                    <p>3D 애니메이션 스타일</p>
+                </div>
+                <div class="style-check hidden">
+                    <span>✓</span>
+                </div>
+            </div>
+
+            <div class="kiosk-style-card" data-style="character">
+                <div class="style-preview">
+                    <div class="style-icon-large">✨</div>
+                </div>
+                <div class="style-info">
+                    <h2>캐릭터</h2>
+                    <p>동화풍 캐릭터 스타일</p>
+                </div>
+                <div class="style-check hidden">
+                    <span>✓</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="kiosk-footer">
+            <div class="price-info">
+                <span class="price-label">가격</span>
+                <span class="price-value">5,000원</span>
+            </div>
+            <button class="kiosk-btn primary" id="paymentBtn" disabled>
+                결제하기
+            </button>
+        </div>
+    </div>
+
+    <script src="/static/kiosk.js"></script>
+</body>
+</html>

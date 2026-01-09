@@ -461,9 +461,28 @@ footer {
     background: transparent;
 }
 
-.footer-note {
-    margin-top: 0.5rem;
+.footer-brand {
+    font-size: 1.1rem;
+    color: #a0aec0;
+    margin-bottom: 0.5rem;
+}
+
+.footer-company {
+    font-size: 1rem;
+    color: #667eea;
+    font-weight: 500;
+}
+
+.footer-social {
     font-size: 0.9rem;
+    color: #a5b4fc;
+    margin-top: 0.25rem;
+}
+
+.footer-note {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: #718096;
 }
 
 .gallery-section {

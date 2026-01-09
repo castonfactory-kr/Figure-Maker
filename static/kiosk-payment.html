@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastAI - 결제</title>
+    <link rel="stylesheet" href="/static/kiosk.css">
+</head>
+<body class="kiosk-body">
+    <div class="kiosk-container">
+        <header class="kiosk-header">
+            <h1>CastAI</h1>
+            <p>결제 방법을 선택해주세요</p>
+        </header>
+
+        <div class="payment-info-bar">
+            <span class="selected-style" id="selectedStyle">리얼 (버블헤드)</span>
+            <span class="payment-amount">5,000원</span>
+        </div>
+
+        <div class="payment-methods">
+            <div class="payment-card" id="cardPayment">
+                <div class="payment-icon">💳</div>
+                <h2>신용카드</h2>
+                <p>카드를 단말기에 삽입해주세요</p>
+            </div>
+
+            <div class="payment-card" id="mobilePayment">
+                <div class="payment-icon">📱</div>
+                <h2>간편결제</h2>
+                <p>삼성페이, 카카오페이 등</p>
+            </div>
+        </div>
+
+        <div class="kiosk-footer">
+            <button class="kiosk-btn secondary" id="backBtn">
+                뒤로가기
+            </button>
+        </div>
+    </div>
+
+    <div class="payment-overlay hidden" id="paymentOverlay">
+        <div class="payment-modal">
+            <div class="payment-status">
+                <div class="payment-spinner" id="paymentSpinner"></div>
+                <div class="payment-complete-icon hidden" id="completeIcon">✓</div>
+            </div>
+            <h2 class="payment-title" id="paymentTitle">결제 대기중</h2>
+            <p class="payment-message" id="paymentMessage">카드를 입력해주세요</p>
+            <button class="kiosk-btn secondary hidden" id="closePaymentBtn">확인</button>
+        </div>
+    </div>
+
+    <script>
+        const cardPayment = document.getElementById('cardPayment');
+        const mobilePayment = document.getElementById('mobilePayment');
+        const backBtn = document.getElementById('backBtn');
+        const paymentOverlay = document.getElementById('paymentOverlay');
+        const paymentTitle = document.getElementById('paymentTitle');
+        const paymentMessage = document.getElementById('paymentMessage');
+        const paymentSpinner = document.getElementById('paymentSpinner');
+        const completeIcon = document.getElementById('completeIcon');
+        const closePaymentBtn = document.getElementById('closePaymentBtn');
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const style = urlParams.get('style');
+        const styleNames = {
+            'real_bubblehead': '리얼 (버블헤드)',
+            'semi_realistic': '반실사 (3D)',
+            'character': '캐릭터'
+        };
+        if (style && styleNames[style]) {
+            document.getElementById('selectedStyle').textContent = styleNames[style];
+        }
+
+        cardPayment.addEventListener('click', () => {
+            showPaymentModal('card');
+        });
+
+        mobilePayment.addEventListener('click', () => {
+            showPaymentModal('mobile');
+        });
+
+        backBtn.addEventListener('click', () => {
+            window.location.href = '/static/kiosk-select.html';
+        });
+
+        closePaymentBtn.addEventListener('click', () => {
+            paymentOverlay.classList.add('hidden');
+            paymentSpinner.classList.remove('hidden');
+            completeIcon.classList.add('hidden');
+            closePaymentBtn.classList.add('hidden');
+        });
+
+        function showPaymentModal(type) {
+            paymentOverlay.classList.remove('hidden');
+            paymentSpinner.classList.remove('hidden');
+            completeIcon.classList.add('hidden');
+            closePaymentBtn.classList.add('hidden');
+            
+            if (type === 'card') {
+                paymentTitle.textContent = '결제 대기중';
+                paymentMessage.textContent = '카드를 입력해주세요';
+                
+                setTimeout(() => {
+                    paymentSpinner.classList.add('hidden');
+                    completeIcon.classList.remove('hidden');
+                    paymentTitle.textContent = '결제가 완료되었습니다';
+                    paymentMessage.textContent = '캐릭터 생성을 시작합니다';
+                    closePaymentBtn.classList.remove('hidden');
+                }, 3000);
+            } else {
+                paymentTitle.textContent = '결제 대기중';
+                paymentMessage.textContent = '스마트폰의 간편결제 화면에서 결제를 진행해주세요';
+            }
+        }
+    </script>
+</body>
+</html>
