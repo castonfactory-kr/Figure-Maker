@@ -93,10 +93,10 @@ class StableDiffusionService:
     async def transform_to_character(
         self,
         image_bytes: bytes,
-        style: str = "sd_character",
+        style: str = "real_bubblehead",
         denoising_strength: float = RECOMMENDED_DENOISING_STRENGTH
     ) -> bytes:
-        style_config = CHARACTER_STYLES.get(style, CHARACTER_STYLES["sd_character"])
+        style_config = CHARACTER_STYLES.get(style, CHARACTER_STYLES["real_bubblehead"])
         
         image_base64 = base64.b64encode(image_bytes).decode("utf-8")
         

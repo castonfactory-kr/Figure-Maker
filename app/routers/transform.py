@@ -89,7 +89,7 @@ async def get_gallery():
 @router.post("/character")
 async def transform_character(
     image: UploadFile = File(...),
-    style: str = Form(default="sd_character"),
+    style: str = Form(default="real_bubblehead"),
     denoising_strength: float = Form(default=0.42)
 ):
     if not image.content_type or not image.content_type.startswith("image/"):
