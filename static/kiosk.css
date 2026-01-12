@@ -246,6 +246,10 @@ body.kiosk-body {
     box-shadow: 0 4px 20px var(--shadow);
 }
 
+.kiosk-footer * {
+    padding-inline: 0.5rem;
+}
+
 .price-info {
     display: flex;
     align-items: center;
