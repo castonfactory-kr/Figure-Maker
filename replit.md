@@ -33,6 +33,7 @@ AI 기반 인물 이미지 캐릭터 변환 서비스 (포토부스 키오스크
 │       └── stable_diffusion.py # SD API 연동 서비스
 ├── static/
 │   ├── index.html              # 메인 페이지 (사진 업로드)
+│   ├── camera.html             # 카메라 촬영 페이지 (포토부스 모드)
 │   ├── style.html              # 스타일 선택 페이지
 │   ├── shipping.html           # 배송지 입력 페이지
 │   ├── payment.html            # 결제 페이지
@@ -51,11 +52,17 @@ AI 기반 인물 이미지 캐릭터 변환 서비스 (포토부스 키오스크
 4. **애니메이션** - 일본 애니메이션 스타일 (anime)
 
 ## 페이지 플로우
+### 업로드 모드
 1. `/static/index.html` - 메인 (사진 업로드) + SD 서버 상태 표시
 2. `/static/style.html` - 스타일 선택 (좌: 업로드 이미지, 우: 4종 스타일)
 3. `/static/shipping.html` - 배송지 입력
 4. `/static/payment.html` - 결제 (신용카드/간편결제)
 5. `/static/printing.html` - 사진 인쇄중
+
+### 카메라 촬영 모드 (포토부스)
+1. `/static/camera.html` - 카메라 촬영 (5초 카운트다운 후 자동 촬영)
+2. `/static/style.html` - 스타일 선택
+3. 이하 동일
 
 ## UI 특징
 - **라이트 모드**: 흰색, 크림, 베이지, 파스텔 톤
