@@ -36,6 +36,12 @@ CHARACTER_STYLES = {
         "name_en": "Character",
         "description": "동화풍 캐릭터 스타일",
         "prompt": "full figure,from head to feet,full body,posing,fairy tale style,magical character,enchanting,storybook illustration,whimsical,expressive eyes,vibrant colors,well-tailored,high definition,4k,high quality"
+    },
+    "anime": {
+        "name": "애니메이션",
+        "name_en": "Anime Style",
+        "description": "일본 애니메이션 스타일",
+        "prompt": "full figure,from head to feet,full body,posing,anime style,beautiful anime character,cel shaded,expressive anime eyes,detailed hair,high quality anime art,well-tailored,high definition,4k,high quality"
     }
 }
 

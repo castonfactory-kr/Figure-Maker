@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastAI - 배송지 입력</title>
+    <link rel="stylesheet" href="/static/kiosk.css">
+</head>
+<body class="kiosk-body">
+    <div class="kiosk-container">
+        <header class="kiosk-header">
+            <h1>CastAI</h1>
+            <p>배송지 정보를 입력해주세요</p>
+        </header>
+
+        <div class="kiosk-card" style="max-width: 800px; margin: 0 auto;">
+            <h2>배송 정보</h2>
+            
+            <form id="shippingForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">받는 분 성함</label>
+                        <input type="text" id="name" placeholder="홍길동" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">연락처</label>
+                        <input type="tel" id="phone" placeholder="010-1234-5678" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="postcode">우편번호</label>
+                    <div style="display: flex; gap: 1rem;">
+                        <input type="text" id="postcode" placeholder="12345" style="flex: 1;" required>
+                        <button type="button" class="kiosk-btn secondary" style="padding: 1rem 1.5rem; font-size: 1rem;">주소 검색</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">주소</label>
+                    <input type="text" id="address" placeholder="서울시 강남구 테헤란로 123" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="addressDetail">상세 주소</label>
+                    <input type="text" id="addressDetail" placeholder="101동 1001호">
+                </div>
+
+                <div class="form-group">
+                    <label for="memo">배송 메모 (선택)</label>
+                    <textarea id="memo" placeholder="배송 시 요청사항을 입력해주세요"></textarea>
+                </div>
+            </form>
+        </div>
+
+        <div class="kiosk-footer" style="max-width: 800px; margin: 0 auto;">
+            <button class="kiosk-btn secondary" id="backBtn">이전</button>
+            <div class="price-info">
+                <span class="price-label">결제 금액</span>
+                <span class="price-value">5,000원</span>
+            </div>
+            <button class="kiosk-btn primary" id="nextBtn">
+                결제하기
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const backBtn = document.getElementById('backBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const form = document.getElementById('shippingForm');
+
+        backBtn.addEventListener('click', () => {
+            window.location.href = '/static/kiosk-style.html';
+        });
+
+        nextBtn.addEventListener('click', () => {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const postcode = document.getElementById('postcode').value;
+            const address = document.getElementById('address').value;
+
+            if (!name || !phone || !postcode || !address) {
+                alert('필수 정보를 모두 입력해주세요.');
+                return;
+            }
+
+            sessionStorage.setItem('shippingInfo', JSON.stringify({
+                name,
+                phone,
+                postcode,
+                address,
+                addressDetail: document.getElementById('addressDetail').value,
+                memo: document.getElementById('memo').value
+            }));
+
+            window.location.href = '/static/kiosk-payment.html';
+        });
+    </script>
+</body>
+</html>

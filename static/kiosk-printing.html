@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastAI - 인쇄중</title>
+    <link rel="stylesheet" href="/static/kiosk.css">
+</head>
+<body class="kiosk-body">
+    <div class="kiosk-container">
+        <header class="kiosk-header">
+            <h1>CastAI</h1>
+        </header>
+
+        <div class="kiosk-card" style="max-width: 700px; margin: 0 auto;">
+            <div class="printing-container">
+                <div class="printing-animation">
+                    <div class="printing-icon">🖨️</div>
+                </div>
+                <h2 class="printing-title">사진 인쇄중</h2>
+                <p class="printing-message">잠시만 기다려주세요. 곧 인쇄가 완료됩니다.</p>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+
+                <p class="printing-message" style="margin-top: 1rem; font-size: 1rem; color: var(--text-light);">
+                    예상 소요시간: 약 30초
+                </p>
+            </div>
+        </div>
+
+        <div class="kiosk-footer" style="max-width: 700px; margin: 0 auto; justify-content: center;">
+            <div style="text-align: center;">
+                <p style="color: var(--text-muted); font-size: 1.1rem;">
+                    인쇄가 완료되면 사진을 수령해주세요
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.querySelector('.printing-title').textContent = '인쇄가 완료되었습니다!';
+            document.querySelector('.printing-message').textContent = '사진을 수령해주세요. 이용해 주셔서 감사합니다.';
+            document.querySelector('.printing-icon').textContent = '✅';
+            document.querySelector('.printing-icon').style.animation = 'none';
+        }, 8000);
+    </script>
+</body>
+</html>

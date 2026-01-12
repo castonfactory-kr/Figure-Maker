@@ -13,12 +13,12 @@
             <p>결제 방법을 선택해주세요</p>
         </header>
 
-        <div class="payment-info-bar">
+        <div class="payment-info-bar" style="max-width: 900px; margin: 0 auto;">
             <span class="selected-style" id="selectedStyle">리얼 (버블헤드)</span>
             <span class="payment-amount">5,000원</span>
         </div>
 
-        <div class="payment-methods">
+        <div class="payment-methods" style="max-width: 900px; margin: 0 auto;">
             <div class="payment-card" id="cardPayment">
                 <div class="payment-icon">💳</div>
                 <h2>신용카드</h2>
@@ -32,10 +32,12 @@
             </div>
         </div>
 
-        <div class="kiosk-footer">
+        <div class="kiosk-footer" style="max-width: 900px; margin: 0 auto;">
             <button class="kiosk-btn secondary" id="backBtn">
-                뒤로가기
+                이전
             </button>
+            <div></div>
+            <div></div>
         </div>
     </div>
 
@@ -47,7 +49,6 @@
             </div>
             <h2 class="payment-title" id="paymentTitle">결제 대기중</h2>
             <p class="payment-message" id="paymentMessage">카드를 입력해주세요</p>
-            <button class="kiosk-btn secondary hidden" id="closePaymentBtn">확인</button>
         </div>
     </div>
 
@@ -60,17 +61,17 @@
         const paymentMessage = document.getElementById('paymentMessage');
         const paymentSpinner = document.getElementById('paymentSpinner');
         const completeIcon = document.getElementById('completeIcon');
-        const closePaymentBtn = document.getElementById('closePaymentBtn');
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const style = urlParams.get('style');
         const styleNames = {
             'real_bubblehead': '리얼 (버블헤드)',
             'semi_realistic': '반실사 (3D)',
-            'character': '캐릭터'
+            'character': '캐릭터',
+            'anime': '애니메이션'
         };
-        if (style && styleNames[style]) {
-            document.getElementById('selectedStyle').textContent = styleNames[style];
+
+        const selectedStyle = sessionStorage.getItem('selectedStyle');
+        if (selectedStyle && styleNames[selectedStyle]) {
+            document.getElementById('selectedStyle').textContent = styleNames[selectedStyle];
         }
 
         cardPayment.addEventListener('click', () => {
@@ -82,45 +83,32 @@
         });
 
         backBtn.addEventListener('click', () => {
-            window.location.href = '/static/kiosk-select.html';
-        });
-
-        closePaymentBtn.addEventListener('click', () => {
-            paymentOverlay.classList.add('hidden');
-            paymentSpinner.classList.remove('hidden');
-            completeIcon.classList.add('hidden');
-            closePaymentBtn.classList.add('hidden');
+            window.location.href = '/static/kiosk-shipping.html';
         });
 
         function showPaymentModal(type) {
             paymentOverlay.classList.remove('hidden');
             paymentSpinner.classList.remove('hidden');
             completeIcon.classList.add('hidden');
-            closePaymentBtn.classList.add('hidden');
             
             if (type === 'card') {
                 paymentTitle.textContent = '결제 대기중';
                 paymentMessage.textContent = '카드를 입력해주세요';
-                
-                setTimeout(() => {
-                    paymentSpinner.classList.add('hidden');
-                    completeIcon.classList.remove('hidden');
-                    paymentTitle.textContent = '결제가 완료되었습니다';
-                    paymentMessage.textContent = '캐릭터 생성을 시작합니다';
-                    closePaymentBtn.classList.remove('hidden');
-                }, 3000);
             } else {
                 paymentTitle.textContent = '결제 대기중';
                 paymentMessage.textContent = '스마트폰의 간편결제 화면에서 결제를 진행해주세요';
-                
-                setTimeout(() => {
-                    paymentSpinner.classList.add('hidden');
-                    completeIcon.classList.remove('hidden');
-                    paymentTitle.textContent = '결제가 완료되었습니다';
-                    paymentMessage.textContent = '캐릭터 생성을 시작합니다';
-                    closePaymentBtn.classList.remove('hidden');
-                }, 3000);
             }
+
+            setTimeout(() => {
+                paymentSpinner.classList.add('hidden');
+                completeIcon.classList.remove('hidden');
+                paymentTitle.textContent = '결제가 완료되었습니다';
+                paymentMessage.textContent = '캐릭터 생성을 시작합니다';
+
+                setTimeout(() => {
+                    window.location.href = '/static/kiosk-printing.html';
+                }, 2000);
+            }, 3000);
         }
     </script>
 </body>

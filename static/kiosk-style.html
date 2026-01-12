@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastAI - 스타일 선택</title>
+    <link rel="stylesheet" href="/static/kiosk.css">
+</head>
+<body class="kiosk-body">
+    <div class="kiosk-container">
+        <header class="kiosk-header">
+            <h1>CastAI</h1>
+            <p>원하시는 캐릭터 스타일을 선택해주세요</p>
+        </header>
+
+        <div class="kiosk-main">
+            <div class="kiosk-card">
+                <h2>업로드한 사진</h2>
+                <div class="preview-container">
+                    <img id="uploadedImage" src="" alt="Uploaded photo">
+                    <div class="preview-placeholder hidden" id="placeholder">
+                        <div class="icon">🖼️</div>
+                        <p>이미지가 없습니다</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kiosk-card">
+                <h2>캐릭터 스타일 선택</h2>
+                <div class="style-grid">
+                    <div class="style-option" data-style="real_bubblehead">
+                        <div class="style-image">
+                            <img src="/static/images/style-real.jpg" alt="리얼 스타일" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="placeholder" style="display:none;">예시 이미지</span>
+                        </div>
+                        <h3>리얼 (버블헤드)</h3>
+                        <p>실사풍 큰 머리 캐릭터</p>
+                    </div>
+
+                    <div class="style-option" data-style="semi_realistic">
+                        <div class="style-image">
+                            <img src="/static/images/style-3d.jpg" alt="3D 스타일" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="placeholder" style="display:none;">예시 이미지</span>
+                        </div>
+                        <h3>반실사 (3D)</h3>
+                        <p>3D 애니메이션 스타일</p>
+                    </div>
+
+                    <div class="style-option" data-style="character">
+                        <div class="style-image">
+                            <img src="/static/images/style-character.jpg" alt="캐릭터 스타일" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="placeholder" style="display:none;">예시 이미지</span>
+                        </div>
+                        <h3>캐릭터</h3>
+                        <p>동화풍 캐릭터 스타일</p>
+                    </div>
+
+                    <div class="style-option" data-style="anime">
+                        <div class="style-image">
+                            <img src="/static/images/style-anime.jpg" alt="애니메이션 스타일" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <span class="placeholder" style="display:none;">예시 이미지</span>
+                        </div>
+                        <h3>애니메이션</h3>
+                        <p>일본 애니메이션 스타일</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="kiosk-footer">
+            <div class="btn-group">
+                <button class="kiosk-btn secondary" id="backBtn">이전</button>
+            </div>
+            <div class="price-info">
+                <span class="price-label">가격</span>
+                <span class="price-value">5,000원</span>
+            </div>
+            <button class="kiosk-btn primary" id="nextBtn" disabled>
+                다음 단계로
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const uploadedImage = document.getElementById('uploadedImage');
+        const placeholder = document.getElementById('placeholder');
+        const styleOptions = document.querySelectorAll('.style-option');
+        const nextBtn = document.getElementById('nextBtn');
+        const backBtn = document.getElementById('backBtn');
+
+        let selectedStyle = null;
+
+        const imageData = sessionStorage.getItem('uploadedImage');
+        if (imageData) {
+            uploadedImage.src = imageData;
+            uploadedImage.classList.remove('hidden');
+        } else {
+            uploadedImage.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+        }
+
+        styleOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                styleOptions.forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+                selectedStyle = option.dataset.style;
+                nextBtn.disabled = false;
+            });
+        });
+
+        backBtn.addEventListener('click', () => {
+            window.location.href = '/static/kiosk-upload.html';
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (selectedStyle) {
+                sessionStorage.setItem('selectedStyle', selectedStyle);
+                window.location.href = '/static/kiosk-shipping.html';
+            }
+        });
+    </script>
+</body>
+</html>
