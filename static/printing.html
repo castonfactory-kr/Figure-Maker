@@ -25,7 +25,7 @@
                 </div>
 
                 <p class="printing-message" style="margin-top: 1rem; font-size: 1rem; color: var(--text-light);">
-                    예상 소요시간: 약 30초
+                    예상 소요시간: 약 15초
                 </p>
             </div>
         </div>
@@ -45,12 +45,17 @@
             document.querySelector('.printing-message').textContent = '사진을 수령해주세요. 이용해 주셔서 감사합니다.';
             document.querySelector('.printing-icon').textContent = '✅';
             document.querySelector('.printing-icon').style.animation = 'none';
-            document.querySelector('.printing-toast').textContent = '5초 후 메인 화면으로 돌아갑니다.';
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 5000);
-        }, 8000);
-        
+
+            let count = 5;
+            setInterval(() => {
+                if (count > 0) {
+                    document.querySelector('.printing-toast').textContent = `${count--}초 후 메인 화면으로 돌아갑니다.`;
+                } else {
+                    window.location.href = '/';
+                    count = 5;
+                }
+            }, 1000)
+        }, 8000)
     </script>
 </body>
 </html>
