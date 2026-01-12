@@ -109,13 +109,13 @@
         });
 
         backBtn.addEventListener('click', () => {
-            window.location.href = '/static/kiosk-upload.html';
+            window.location.href = '/static/index.html';
         });
 
         nextBtn.addEventListener('click', () => {
             if (selectedStyle) {
                 sessionStorage.setItem('selectedStyle', selectedStyle);
-                window.location.href = '/static/kiosk-shipping.html';
+                window.location.href = '/static/shipping.html';
             }
         });
     </script>
