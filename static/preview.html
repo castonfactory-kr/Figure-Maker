@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CastAI - 미리보기</title>
+    <link rel="stylesheet" href="/static/kiosk.css">
+    <style>
+        .preview-main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .preview-image-container {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px var(--shadow);
+            width: 100%;
+            max-width: 500px;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-image-container img {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 16px;
+            object-fit: contain;
+        }
+        
+        .preview-placeholder {
+            text-align: center;
+            color: var(--text-light);
+        }
+        
+        .preview-placeholder .icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .loading-container {
+            text-align: center;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        .loading-text {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .style-selector {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .style-mini {
+            background: var(--bg-cream);
+            border: 3px solid transparent;
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .style-mini:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        .style-mini.selected {
+            border-color: var(--primary);
+            background: var(--pastel-purple);
+        }
+        
+        .style-mini.loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .style-mini h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+        }
+        
+        .style-mini p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0.25rem 0 0;
+        }
+        
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 2rem;
+            background: #fef2f2;
+            border-top: 2px solid #fecaca;
+            color: #dc2626;
+            text-align: center;
+            font-size: 1rem;
+            z-index: 100;
+        }
+        
+        .status-bar.hidden {
+            display: none;
+        }
+        
+        .status-bar .contact {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="kiosk-body">
+    <div class="kiosk-container">
+        <header class="kiosk-header">
+            <h1>CastAI</h1>
+            <p>생성된 캐릭터를 확인해주세요</p>
+        </header>
+
+        <div class="preview-main">
+            <div class="preview-image-container" id="previewContainer">
+                <div class="loading-container" id="loadingState">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">캐릭터를 생성하고 있습니다...</p>
+                    <p class="loading-text" style="font-size: 0.9rem; margin-top: 0.5rem;">잠시만 기다려주세요</p>
+                </div>
+                
+                <img id="generatedImage" class="hidden" alt="Generated character">
+                
+                <div class="preview-placeholder hidden" id="placeholder">
+                    <div class="icon">🖼️</div>
+                    <p>이미지를 불러올 수 없습니다</p>
+                </div>
+            </div>
+            
+            <div class="kiosk-card" style="width: 100%; max-width: 700px;">
+                <h3 style="text-align: center; margin-bottom: 1rem; color: var(--text-dark);">다른 스타일로 변경하기</h3>
+                <div class="style-selector" id="styleSelector">
+                    <div class="style-mini" data-style="real_bubblehead">
+                        <h4>리얼</h4>
+                        <p>버블헤드</p>
+                    </div>
+                    <div class="style-mini" data-style="semi_realistic">
+                        <h4>반실사</h4>
+                        <p>3D 스타일</p>
+                    </div>
+                    <div class="style-mini" data-style="character">
+                        <h4>캐릭터</h4>
+                        <p>동화풍</p>
+                    </div>
+                    <div class="style-mini" data-style="anime">
+                        <h4>애니메이션</h4>
+                        <p>일본풍</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="kiosk-footer" style="max-width: 700px; margin: 2rem auto 0;">
+            <button class="kiosk-btn secondary" id="backBtn">이전</button>
+            <div class="price-info">
+                <span class="price-label">가격</span>
+                <span class="price-value">5,000원</span>
+            </div>
+            <button class="kiosk-btn primary" id="nextBtn" disabled>
+                다음 단계로
+            </button>
+        </div>
+    </div>
+
+    <div class="status-bar hidden" id="statusBar">
+        <div>⚠️ <span id="errorMessage">Stable Diffusion 서버 연결 실패</span></div>
+        <div class="contact">관리자에게 문의해주세요</div>
+    </div>
+
+    <script>
+        const previewContainer = document.getElementById('previewContainer');
+        const loadingState = document.getElementById('loadingState');
+        const generatedImage = document.getElementById('generatedImage');
+        const placeholder = document.getElementById('placeholder');
+        const styleSelector = document.getElementById('styleSelector');
+        const styleMinis = document.querySelectorAll('.style-mini');
+        const backBtn = document.getElementById('backBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const statusBar = document.getElementById('statusBar');
+        const errorMessage = document.getElementById('errorMessage');
+
+        let currentStyle = sessionStorage.getItem('selectedStyle') || 'real_bubblehead';
+        let uploadedImage = sessionStorage.getItem('uploadedImage');
+        let generatedImageData = null;
+        let isGenerating = false;
+
+        styleMinis.forEach(mini => {
+            if (mini.dataset.style === currentStyle) {
+                mini.classList.add('selected');
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            statusBar.classList.remove('hidden');
+        }
+
+        function hideError() {
+            statusBar.classList.add('hidden');
+        }
+
+        function showLoading() {
+            loadingState.classList.remove('hidden');
+            generatedImage.classList.add('hidden');
+            placeholder.classList.add('hidden');
+            nextBtn.disabled = true;
+        }
+
+        function showImage(imageUrl) {
+            loadingState.classList.add('hidden');
+            generatedImage.src = imageUrl;
+            generatedImage.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+            nextBtn.disabled = false;
+            hideError();
+        }
+
+        function showPlaceholder() {
+            loadingState.classList.add('hidden');
+            generatedImage.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+            nextBtn.disabled = true;
+        }
+
+        async function checkServerHealth() {
+            try {
+                const response = await fetch('/api/transform/health');
+                const data = await response.json();
+                return data.status === 'connected';
+            } catch (error) {
+                return false;
+            }
+        }
+
+        async function generateCharacter(style) {
+            if (isGenerating) return;
+            if (!uploadedImage) {
+                showPlaceholder();
+                showError('업로드된 이미지가 없습니다');
+                return;
+            }
+
+            isGenerating = true;
+            showLoading();
+            styleMinis.forEach(m => m.classList.add('loading'));
+
+            try {
+                const isConnected = await checkServerHealth();
+                if (!isConnected) {
+                    /* === BYPASS FOR TESTING ===
+                    showPlaceholder();
+                    showError('Stable Diffusion 서버 연결 실패');
+                    isGenerating = false;
+                    styleMinis.forEach(m => m.classList.remove('loading'));
+                    return;
+                    === END BYPASS === */
+                }
+
+                const base64Data = uploadedImage.split(',')[1];
+
+                const formData = new FormData();
+                const blob = await fetch(uploadedImage).then(r => r.blob());
+                formData.append('image', blob, 'photo.jpg');
+                formData.append('style', style);
+
+                const response = await fetch('/api/transform/character', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || '이미지 생성에 실패했습니다');
+                }
+
+                const data = await response.json();
+                generatedImageData = data.image_url;
+                showImage(generatedImageData);
+                sessionStorage.setItem('generatedImage', generatedImageData);
+
+            } catch (error) {
+                console.error('Generation error:', error);
+                
+                /* === BYPASS FOR TESTING - Show uploaded image instead === */
+                showImage(uploadedImage);
+                sessionStorage.setItem('generatedImage', uploadedImage);
+                /* === END BYPASS === */
+                
+                /* === UNCOMMENT FOR PRODUCTION ===
+                showPlaceholder();
+                showError(error.message || '이미지 생성 중 오류가 발생했습니다');
+                === END PRODUCTION CODE === */
+            }
+
+            isGenerating = false;
+            styleMinis.forEach(m => m.classList.remove('loading'));
+        }
+
+        styleMinis.forEach(mini => {
+            mini.addEventListener('click', () => {
+                if (isGenerating) return;
+                
+                styleMinis.forEach(m => m.classList.remove('selected'));
+                mini.classList.add('selected');
+                currentStyle = mini.dataset.style;
+                sessionStorage.setItem('selectedStyle', currentStyle);
+                
+                generateCharacter(currentStyle);
+            });
+        });
+
+        backBtn.addEventListener('click', () => {
+            window.location.href = '/static/style.html';
+        });
+
+        nextBtn.addEventListener('click', () => {
+            window.location.href = '/static/shipping.html';
+        });
+
+        if (!uploadedImage) {
+            showPlaceholder();
+            showError('업로드된 이미지가 없습니다. 처음부터 다시 시작해주세요.');
+        } else {
+            generateCharacter(currentStyle);
+        }
+    </script>
+</body>
+</html>

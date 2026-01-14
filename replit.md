@@ -35,6 +35,7 @@ AI 기반 인물 이미지 캐릭터 변환 서비스 (포토부스 키오스크
 │   ├── index.html              # 메인 페이지 (사진 업로드)
 │   ├── camera.html             # 카메라 촬영 페이지 (포토부스 모드)
 │   ├── style.html              # 스타일 선택 페이지
+│   ├── preview.html            # AI 생성 이미지 미리보기 페이지
 │   ├── shipping.html           # 배송지 입력 페이지
 │   ├── payment.html            # 결제 페이지
 │   ├── printing.html           # 인쇄중 페이지
@@ -55,9 +56,10 @@ AI 기반 인물 이미지 캐릭터 변환 서비스 (포토부스 키오스크
 ### 업로드 모드
 1. `/static/index.html` - 메인 (사진 업로드) + SD 서버 상태 표시
 2. `/static/style.html` - 스타일 선택 (좌: 업로드 이미지, 우: 4종 스타일)
-3. `/static/shipping.html` - 배송지 입력
-4. `/static/payment.html` - 결제 (신용카드/간편결제)
-5. `/static/printing.html` - 사진 인쇄중
+3. `/static/preview.html` - AI 생성 이미지 미리보기 + 스타일 변경
+4. `/static/shipping.html` - 배송지 입력
+5. `/static/payment.html` - 결제 (신용카드/간편결제)
+6. `/static/printing.html` - 사진 인쇄중
 
 ### 카메라 촬영 모드 (포토부스)
 1. `/static/camera.html` - 카메라 촬영 (5초 카운트다운 후 자동 촬영)
