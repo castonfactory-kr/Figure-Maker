@@ -73,7 +73,7 @@
         try {
           const response = await fetch("api/transform/health");
           const data = await response.json();
-          if (data.sd_server_status !== "connected") {
+          if (data.status !== "connected") {
             statusBar.classList.remove("hidden");
           } else {
             statusBar.classList.add("hidden");
