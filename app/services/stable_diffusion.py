@@ -16,7 +16,7 @@ def is_connection_error(exception: BaseException) -> bool:
     )
 
 
-NEGATIVE_PROMPT_BASE = "worst quality,low quality,low contrast,blurry,low quality,medium quality,watermark,username,signature,text,bad anatomy,bad hands,error,missing fingers,extra digit,fewer digits,cropped,jpeg artifacts,bad feet,extra fingers,mutated hands,poorly drawn hands,bad proportions,extra limbs,disfigured,bad anatomy,gross proportions,malformed limbs,missing arms,missing legs,extra arms,extra legs,mutated hands,fused fingers,too many fingers,long neck,sign,blurry,underwear,sexy,lewd,nsfw,exhibitionism,no body,no legs,no hands,missing body parts,unhuman,monster,nohands,amputee,cosplay,unrealistic items"
+NEGATIVE_PROMPT_BASE = "signature,poor body structure,low-quality drawing,incorrect size,outside the edges,unclear,dull background,logo,cropped,trimmed,body parts separated,uneven size,twisted,copy,duplicated elements,additional arms,additional fingers,additional hands,additional legs,additional body parts,flaw,imperfection,joined fingers,unpleasant size,identifying sign,incorrect structure,wrong proportion,tacky,poor quality,poor clarity,spot,absent arms,absent fingers,absent hands,absent legs,error,damaged,beyond the image,badly drawn face,badly drawn feet,badly drawn hands,text on paper,repulsive,narrow eyes,visual plan,arrangement,cut off,unpleasant,blurry,unattractive,awkward position,imaginary framework,watermark,worst quality,low contrast,username,text,bad anatomy,bad hands,missing fingers,extra digit,fewer digits,jpeg artifacts,bad feet,extra fingers,mutated hands,poorly drawn hands,bad proportions,extra limbs,disfigured,gross proportions,malformed limbs,missing arms,missing legs,extra arms,extra legs,fused fingers,too many fingers,long neck,sign,underwear,sexy,lewd,nsfw,exhibitionism,no body,no legs,no hands,missing body parts,un human,monster,amputee,unrealistic items"
 
 CHARACTER_STYLES = {
     "real_bubblehead": {
@@ -45,7 +45,7 @@ CHARACTER_STYLES = {
     }
 }
 
-RECOMMENDED_DENOISING_STRENGTH = 0.42
+RECOMMENDED_DENOISING_STRENGTH = 0.32
 
 
 class StableDiffusionService:
