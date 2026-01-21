@@ -14,10 +14,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 소스 코드 복사
 COPY . .
 
-# .env 파일 복사 (환경 변수 설정용)
-# 프로덕션에서는 docker-compose의 environment로 오버라이드 가능
-COPY .env .env
-
 # 포트 노출
 EXPOSE 5000
 
