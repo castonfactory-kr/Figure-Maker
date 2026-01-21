@@ -18,12 +18,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 1. 리포지토리 이름을 소문자로 변환 (대문자 에러 방지)
-      - name: Lowercase Repository Name
+      - name: Lowercase Repo Name
         run: |
           echo "IMAGE_NAME=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
-      # 2. Docker Registry 로그인
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
@@ -31,7 +29,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 3. 이미지 빌드 및 푸시 (소문자 이름 사용)
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -39,7 +36,6 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.IMAGE_NAME }}:latest
 
-      # 4. 서버에 배포 (SSH)
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
         with:
@@ -48,26 +44,22 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            # 환경변수 설정 (리포지토리 이름에서 서비스 이름 추출)
             REPO_NAME=$(echo "${{ github.event.repository.name }}" | tr '[:upper:]' '[:lower:]')
 
-            # Figure-Maker인 경우만 서비스 이름을 'backend'로 매핑
             if [ "$REPO_NAME" = "figure-maker" ]; then
               SERVICE_NAME="backend"
+            elif [ "$REPO_NAME" = "castonfactory" ]; then
+              SERVICE_NAME="intro1"
+            elif [ "$REPO_NAME" = "castonfactory2" ]; then
+              SERVICE_NAME="intro2"
             else
-              SERVICE_NAME="$REPO_NAME"
+              echo "Error: Unknown repository name $REPO_NAME"
+              exit 1
             fi
 
-            echo "Deploying $SERVICE_NAME from image $REPO_NAME..."
-
             cd ~/server
-
-            # Docker 로그인
             echo ${{ secrets.DOCKER_PASSWORD }} | docker login ghcr.io -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-            # 최신 이미지 받기 및 재시작
             docker compose pull $SERVICE_NAME
             docker compose up -d $SERVICE_NAME
-
-            # 구버전 이미지 삭제
             docker image prune -f
