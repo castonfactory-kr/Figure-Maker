@@ -40,18 +40,16 @@ CHARACTER_STYLES = {
         "denoise": 0.10  # 원본을 최대한 존중
     },
     "semi_realistic": {
-        "name": "반실사 (3D)",
-        "name_en": "Semi-Realistic (3D)",
-        "description": "3D 애니메이션 스타일",
-        "prompt": "full body portrait,3d rendered character,semi realistic,stylized,expressive eyes,pixar style,high quality 3d art,same person,same face,preserve original features,high definition,4k,high quality",
-        "denoise": 0.20  # 약간만 변형
+        "id": "semi_realistic",
+        "name": "디즈니 (3D)",
+        "prompt": "same person, same face, preserve original features, (Disney style:1.4), (Pixar style:1.4), 3d render, cute, big eyes, clean texture, smooth lighting, (masculine features if man), (feminine features if woman), neutral gender execution, (bubblehead:1.2), big head, clean background",
+        "denoise": 0.25
     },
     "character": {
-        "name": "캐릭터",
-        "name_en": "Character",
-        "description": "동화풍 캐릭터 스타일",
-        "prompt": "full body portrait,fairy tale style,magical character,storybook illustration,whimsical,expressive eyes,vibrant colors,same person,same face,preserve original features,high definition,4k,high quality",
-        "denoise": 0.30  # 더 자유롭게 변형
+        "id": "character",
+        "name": "치비 (넨도로이드)",
+        "prompt": "same person, same face, preserve original features, (Nendoroid style:1.5), (chibi:1.5), plastic texture, figurine, toy like, cute, small body, big head, (bubblehead:1.3), simple details, neutral expression, clean lines",
+        "denoise": 0.35
     }
 }
 
