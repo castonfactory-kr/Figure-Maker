@@ -175,7 +175,7 @@ class ComfyUIService:
         except Exception as e:
             return {
                 "status": "disconnected",
-                "message": str(e),
+                "message": repr(e),
                 "base_url": self.base_url
             }
     
