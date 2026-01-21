@@ -90,7 +90,7 @@ async def get_gallery():
 async def transform_character(
     image: UploadFile = File(...),
     style: str = Form(default="real_bubblehead"),
-    denoising_strength: float = Form(default=0.42)
+    denoising_strength: float | None = Form(default=None)
 ):
     if not image.content_type or not image.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="파일은 이미지여야 합니다")
