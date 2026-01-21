@@ -1,0 +1,81 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "temp.png",
+      "upload": "image"
+    }
+  },
+  "2": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "dreamshaper_8.safetensors"
+    }
+  },
+  "3": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["2", 1],
+      "text": "NEGATIVE_PROMPT"
+    }
+  },
+  "4": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": ["2", 1],
+      "text": "POSITIVE_PROMPT"
+    }
+  },
+  "7": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["12", 0],
+      "vae": ["9", 0]
+    }
+  },
+  "8": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["7", 0],
+      "filename_prefix": "sd1.5_"
+    }
+  },
+  "9": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "vaeFtMse840000EmaPruned_vaeFtMse840k.safetensors"
+    }
+  },
+  "10": {
+    "class_type": "VAEEncode",
+    "inputs": {
+      "pixels": ["13", 0],
+      "vae": ["9", 0]
+    }
+  },
+  "12": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": ["2", 0],
+      "positive": ["4", 0],
+      "negative": ["3", 0],
+      "latent_image": ["10", 0],
+      "seed": 0,
+      "steps": 20,
+      "cfg": 7,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 0.3
+    }
+  },
+  "13": {
+    "class_type": "ImageScale",
+    "inputs": {
+      "image": ["1", 0],
+      "upscale_method": "nearest-exact",
+      "width": 512,
+      "height": 512,
+      "crop": "disabled"
+    }
+  }
+}

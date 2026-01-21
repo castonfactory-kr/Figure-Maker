@@ -1,5 +1,6 @@
 import os
 from typing import Optional
+from pydantic import Field
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 
@@ -13,14 +14,12 @@ class Settings(BaseSettings):
     
     HOST: str = "0.0.0.0"
     PORT: int = 5000
-    
-    STABLE_DIFFUSION_BASE_URL: str = "http://127.0.0.1:7860"
-    STABLE_DIFFUSION_API_KEY: Optional[str] = None
-    
-    SD_DEFAULT_MODEL: str = "v1-5-pruned-emaonly"
-    SD_DEFAULT_SAMPLER: str = "Euler a"
-    SD_DEFAULT_STEPS: int = 45
-    SD_DEFAULT_CFG_SCALE: float = 24.0
+    # ComfyUI API Configuration
+    COMFYUI_BASE_URL: str = Field(
+        default="http://172.30.1.94:8000",
+        description="ComfyUI server base URL"
+    )
+    STABLE_DIFFUSION_API_KEY: str | None = None
     
     UPLOAD_DIR: str = "uploads"
     GENERATED_IMAGES_DIR: str = "generated_images"
