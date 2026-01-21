@@ -1,139 +1,141 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F&P (Figure & Poto) - CastOnFactory 생성형 AI 피규어 주문제작 서비스</title>
-    <link rel="stylesheet" href="/static/kiosk.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      F&P (Figure & Poto) - CastOnFactory 생성형 AI 피규어 주문제작 서비스
+    </title>
+    <link rel="stylesheet" href="static/kiosk.css" />
     <style>
-        .status-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 1rem 2rem;
-            background: #fef2f2;
-            border-top: 2px solid #fecaca;
-            color: #dc2626;
-            text-align: center;
-            font-size: 1rem;
-            z-index: 100;
-        }
-        .status-bar.hidden {
-            display: none;
-        }
+      .status-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1rem 2rem;
+        background: #fef2f2;
+        border-top: 2px solid #fecaca;
+        color: #dc2626;
+        text-align: center;
+        font-size: 1rem;
+        z-index: 100;
+      }
+      .status-bar.hidden {
+        display: none;
+      }
     </style>
-</head>
-<body class="kiosk-body">
+  </head>
+  <body class="kiosk-body">
     <div class="kiosk-container">
-        <header class="kiosk-header">
-            <h1>F&P (Figure & Poto)</h1>
-            <p>생성형 AI 피규어 주문제작 서비스</p>
-        </header>
+      <header class="kiosk-header">
+        <h1>F&P (Figure & Poto)</h1>
+        <p>생성형 AI 피규어 주문제작 서비스</p>
+      </header>
 
-        <div class="kiosk-card" style="max-width: 700px; margin: 0 auto;">
-            <h2>인물 사진을 업로드해주세요</h2>
-            
-            <div class="upload-zone" id="uploadZone">
-                <input type="file" id="imageInput" accept="image/*" hidden>
-                <div class="upload-content" id="uploadContent">
-                    <div class="upload-icon">📷</div>
-                    <p>클릭하거나 이미지를 드래그하세요</p>
-                    <p class="hint">JPG, PNG 파일 (최대 10MB)</p>
-                </div>
-                <img id="previewImage" class="hidden" alt="Preview">
-            </div>
-        </div>
+      <div class="kiosk-card" style="max-width: 700px; margin: 0 auto">
+        <h2>인물 사진을 업로드해주세요</h2>
 
-        <div class="kiosk-footer" style="max-width: 700px; margin: 0 auto;">
-            <div></div>
-            <button class="kiosk-btn primary" id="nextBtn" disabled>
-                다음 단계로
-            </button>
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" id="imageInput" accept="image/*" hidden />
+          <div class="upload-content" id="uploadContent">
+            <div class="upload-icon">📷</div>
+            <p>클릭하거나 이미지를 드래그하세요</p>
+            <p class="hint">JPG, PNG 파일 (최대 10MB)</p>
+          </div>
+          <img id="previewImage" class="hidden" alt="Preview" />
         </div>
+      </div>
+
+      <div class="kiosk-footer" style="max-width: 700px; margin: 0 auto">
+        <div></div>
+        <button class="kiosk-btn primary" id="nextBtn" disabled>
+          다음 단계로
+        </button>
+      </div>
     </div>
 
     <div class="status-bar hidden" id="statusBar">
-        ⚠️ Stable Diffusion 서버 연결 실패 - 캐릭터 변환 기능을 사용할 수 없습니다
+      ⚠️ Stable Diffusion 서버 연결 실패 - 캐릭터 변환 기능을 사용할 수 없습니다
     </div>
 
     <script>
-        const uploadZone = document.getElementById('uploadZone');
-        const imageInput = document.getElementById('imageInput');
-        const uploadContent = document.getElementById('uploadContent');
-        const previewImage = document.getElementById('previewImage');
-        const nextBtn = document.getElementById('nextBtn');
-        const statusBar = document.getElementById('statusBar');
+      const uploadZone = document.getElementById("uploadZone");
+      const imageInput = document.getElementById("imageInput");
+      const uploadContent = document.getElementById("uploadContent");
+      const previewImage = document.getElementById("previewImage");
+      const nextBtn = document.getElementById("nextBtn");
+      const statusBar = document.getElementById("statusBar");
 
-        let uploadedImageData = null;
+      let uploadedImageData = null;
 
-        async function checkServerStatus() {
-            try {
-                const response = await fetch('/api/transform/health');
-                const data = await response.json();
-                if (data.sd_server_status !== 'connected') {
-                    statusBar.classList.remove('hidden');
-                } else {
-                    statusBar.classList.add('hidden');
-                }
-            } catch (error) {
-                statusBar.classList.remove('hidden');
-            }
+      async function checkServerStatus() {
+        try {
+          const response = await fetch("/api/transform/health");
+          const data = await response.json();
+          if (data.sd_server_status !== "connected") {
+            statusBar.classList.remove("hidden");
+          } else {
+            statusBar.classList.add("hidden");
+          }
+        } catch (error) {
+          statusBar.classList.remove("hidden");
+        }
+      }
+
+      checkServerStatus();
+
+      uploadZone.addEventListener("click", () => imageInput.click());
+
+      uploadZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = "#7c3aed";
+      });
+
+      uploadZone.addEventListener("dragleave", () => {
+        uploadZone.style.borderColor = "";
+      });
+
+      uploadZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = "";
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith("image/")) {
+          handleFile(file);
+        }
+      });
+
+      imageInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          handleFile(file);
+        }
+      });
+
+      function handleFile(file) {
+        if (file.size > 10 * 1024 * 1024) {
+          alert("파일 크기는 10MB 이하여야 합니다.");
+          return;
         }
 
-        checkServerStatus();
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          uploadedImageData = e.target.result;
+          previewImage.src = uploadedImageData;
+          previewImage.classList.remove("hidden");
+          uploadContent.classList.add("hidden");
+          uploadZone.classList.add("has-image");
+          nextBtn.disabled = false;
+        };
+        reader.readAsDataURL(file);
+      }
 
-        uploadZone.addEventListener('click', () => imageInput.click());
-
-        uploadZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadZone.style.borderColor = '#7c3aed';
-        });
-
-        uploadZone.addEventListener('dragleave', () => {
-            uploadZone.style.borderColor = '';
-        });
-
-        uploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadZone.style.borderColor = '';
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                handleFile(file);
-            }
-        });
-
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                handleFile(file);
-            }
-        });
-
-        function handleFile(file) {
-            if (file.size > 10 * 1024 * 1024) {
-                alert('파일 크기는 10MB 이하여야 합니다.');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                uploadedImageData = e.target.result;
-                previewImage.src = uploadedImageData;
-                previewImage.classList.remove('hidden');
-                uploadContent.classList.add('hidden');
-                uploadZone.classList.add('has-image');
-                nextBtn.disabled = false;
-            };
-            reader.readAsDataURL(file);
+      nextBtn.addEventListener("click", () => {
+        if (uploadedImageData) {
+          sessionStorage.setItem("uploadedImage", uploadedImageData);
+          window.location.href = "./style.html";
         }
-
-        nextBtn.addEventListener('click', () => {
-            if (uploadedImageData) {
-                sessionStorage.setItem('uploadedImage', uploadedImageData);
-                window.location.href = '/static/style.html';
-            }
-        });
+      });
     </script>
-</body>
+  </body>
 </html>

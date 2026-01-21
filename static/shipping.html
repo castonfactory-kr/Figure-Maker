@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>F&P (Figure & Poto) -배송지 입력</title>
-    <link rel="stylesheet" href="/static/kiosk.css">
+    <link rel="stylesheet" href="static/kiosk.css">
 </head>
 <body class="kiosk-body">
     <div class="kiosk-container">
@@ -71,7 +71,7 @@
         const form = document.getElementById('shippingForm');
 
         backBtn.addEventListener('click', () => {
-            window.location.href = '/static/preview.html';
+            window.location.href = './preview.html';
         });
 
         nextBtn.addEventListener('click', () => {
@@ -94,7 +94,7 @@
                 memo: document.getElementById('memo').value
             }));
 
-            window.location.href = '/static/payment.html';
+            window.location.href = './payment.html';
         });
     </script>
 </body>

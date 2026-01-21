@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>F&P (Figure & Poto) - 결제</title>
-    <link rel="stylesheet" href="/static/kiosk.css">
+    <link rel="stylesheet" href="static/kiosk.css">
 </head>
 <body class="kiosk-body">
     <div class="kiosk-container">
@@ -83,7 +83,7 @@
         });
 
         backBtn.addEventListener('click', () => {
-            window.location.href = '/static/shipping.html';
+            window.location.href = './shipping.html';
         });
 
         function showPaymentModal(type) {
@@ -106,7 +106,7 @@
                 paymentMessage.textContent = '캐릭터 생성을 시작합니다';
 
                 setTimeout(() => {
-                    window.location.href = '/static/printing.html';
+                    window.location.href = './printing.html';
                 }, 2000);
             }, 3000);
         }
