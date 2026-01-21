@@ -27,59 +27,37 @@ def is_connection_error(exception: BaseException) -> bool:
     )
 
 
-# 네거티브 프롬프트 베이스
-NEGATIVE_PROMPT_BASE = (
-    "signature,poor body structure,low-quality drawing,incorrect size,outside the edges,"
-    "unclear,dull background,logo,cropped,trimmed,body parts separated,uneven size,twisted,"
-    "copy,duplicated elements,additional arms,additional fingers,additional hands,additional legs,"
-    "additional body parts,flaw,imperfection,joined fingers,unpleasant size,identifying sign,"
-    "incorrect structure,wrong proportion,tacky,poor quality,poor clarity,spot,absent arms,"
-    "absent fingers,absent hands,absent legs,error,damaged,beyond the image,badly drawn face,"
-    "badly drawn feet,badly drawn hands,text on paper,repulsive,narrow eyes,visual plan,"
-    "arrangement,cut off,unpleasant,blurry,unattractive,awkward position,imaginary framework,"
-    "watermark,worst quality,low contrast,username,text,bad anatomy,bad hands,missing fingers,"
-    "extra digit,fewer digits,jpeg artifacts,bad feet,extra fingers,mutated hands,"
-    "poorly drawn hands,bad proportions,extra limbs,disfigured,gross proportions,"
-    "malformed limbs,missing arms,missing legs,extra arms,extra legs,fused fingers,"
-    "too many fingers,long neck,sign,underwear,sexy,lewd,nsfw,exhibitionism,no body,"
-    "no legs,no hands,missing body parts,un human,monster,amputee,unrealistic items"
-)
+# 네거티브 프롬프트 베이스 (성별 편향 방지 추가)
+NEGATIVE_PROMPT_BASE = "signature,poor body structure,low-quality drawing,incorrect size,outside the edges,unclear,dull background,logo,cropped,trimmed,body parts separated,uneven size,twisted,copy,duplicated elements,additional arms,additional fingers,additional hands,additional legs,additional body parts,flaw,imperfection,joined fingers,unpleasant size,identifying sign,incorrect structure,wrong proportion,tacky,poor quality,poor clarity,spot,absent arms,absent fingers,absent hands,absent legs,error,damaged,beyond the image,badly drawn face,badly drawn feet,badly drawn hands,text on paper,repulsive,narrow eyes,visual plan,arrangement,cut off,unpleasant,blurry,unattractive,awkward position,imaginary framework,watermark,worst quality,low contrast,username,text,bad anatomy,bad hands,missing fingers,extra digit,fewer digits,jpeg artifacts,bad feet,extra fingers,mutated hands,poorly drawn hands,bad proportions,extra limbs,disfigured,gross proportions,malformed limbs,missing arms,missing legs,extra arms,extra legs,fused fingers,too many fingers,long neck,sign,underwear,sexy,lewd,nsfw,exhibitionism,no body,no legs,no hands,missing body parts,un human,monster,amputee,unrealistic items,gender change,different gender,changed gender,altered gender,different person,wrong face,different face,face swap"
 
-# 캐릭터 스타일 설정 (3가지)
+# 캐릭터 스타일 설정 (3가지) - 성별 중립적 프롬프트 + 스타일별 denoise 강도
 CHARACTER_STYLES = {
     "real_bubblehead": {
         "name": "리얼 (버블헤드)",
         "name_en": "Real (Bubble Head)",
         "description": "실사풍 큰 머리 캐릭터",
-        "prompt": (
-            "full figure,from head to feet,full body,posing,bubble head,big head small body,"
-            "realistic skin texture,photorealistic style,cute proportions,well-tailored,"
-            "high definition,4k,high quality"
-        )
+        "prompt": "full body portrait,bubble head,big head small body,realistic skin texture,photorealistic style,cute proportions,same person,same face,preserve original features,high definition,4k,high quality",
+        "denoise": 0.15  # 원본을 최대한 존중
     },
     "semi_realistic": {
         "name": "반실사 (3D)",
         "name_en": "Semi-Realistic (3D)",
         "description": "3D 애니메이션 스타일",
-        "prompt": (
-            "full figure,from head to feet,full body,posing,3d rendered character,semi realistic,"
-            "stylized,smooth skin,expressive eyes,pixar style,high quality 3d art,well-tailored,"
-            "high definition,4k,high quality"
-        )
+        "prompt": "full body portrait,3d rendered character,semi realistic,stylized,expressive eyes,pixar style,high quality 3d art,same person,same face,preserve original features,high definition,4k,high quality",
+        "denoise": 0.20  # 약간만 변형
     },
     "character": {
         "name": "캐릭터",
         "name_en": "Character",
         "description": "동화풍 캐릭터 스타일",
-        "prompt": (
-            "full figure,from head to feet,full body,posing,fairy tale style,magical character,"
-            "enchanting,storybook illustration,whimsical,expressive eyes,vibrant colors,"
-            "well-tailored,high definition,4k,high quality"
-        )
+        "prompt": "full body portrait,fairy tale style,magical character,storybook illustration,whimsical,expressive eyes,vibrant colors,same person,same face,preserve original features,high definition,4k,high quality",
+        "denoise": 0.30  # 더 자유롭게 변형
     }
 }
 
-RECOMMENDED_DENOISING_STRENGTH = 0.32
+
+# 기본 denoise 강도 (스타일별로 다르게 적용됨)
+RECOMMENDED_DENOISING_STRENGTH = 0.22  # fallback용
 
 
 class ComfyUIService:
@@ -155,7 +133,7 @@ class ComfyUIService:
             "10": {
                 "class_type": "VAEEncode",
                 "inputs": {
-                    "pixels": ["13", 0],
+                    "pixels": ["1", 0],  # LoadImage에서 직접 입력 (ImageScale 제거)
                     "vae": ["9", 0]
                 }
             },
@@ -173,17 +151,8 @@ class ComfyUIService:
                     "scheduler": "normal",
                     "denoise": denoise
                 }
-            },
-            "13": {
-                "class_type": "ImageScale",
-                "inputs": {
-                    "image": ["1", 0],
-                    "upscale_method": "nearest-exact",
-                    "width": 512,
-                    "height": 512,
-                    "crop": "disabled"
-                }
             }
+            # ImageScale 노드 제거 - 원본 이미지 크기 유지
         }
     
     async def check_connection(self) -> dict:
@@ -242,12 +211,16 @@ class ComfyUIService:
         self,
         image_bytes: bytes,
         style: str = "real_bubblehead",
-        denoising_strength: float = RECOMMENDED_DENOISING_STRENGTH
+        denoising_strength: float = None  # None이면 스타일별 기본값 사용
     ) -> bytes:
         """이미지를 캐릭터로 변환 (ComfyUI)"""
         
         # 스타일 설정 가져오기
         style_config = CHARACTER_STYLES.get(style, CHARACTER_STYLES["real_bubblehead"])
+        
+        # denoising_strength가 지정되지 않았으면 스타일별 기본값 사용
+        if denoising_strength is None:
+            denoising_strength = style_config.get("denoise", RECOMMENDED_DENOISING_STRENGTH)
         
         # 1. 이미지 업로드
         temp_filename = f"upload_{uuid.uuid4().hex}.png"
