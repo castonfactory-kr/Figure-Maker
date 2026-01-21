@@ -189,7 +189,7 @@
 
         async function checkServerStatus() {
             try {
-                const response = await fetch('/api/transform/health');
+                const response = await fetch('api/transform/health');
                 const data = await response.json();
                 if (data.sd_server_status !== 'connected') {
                     statusBar.classList.remove('hidden');

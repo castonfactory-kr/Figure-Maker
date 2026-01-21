@@ -79,7 +79,7 @@ async def get_gallery():
             
             images.append({
                 "id": image_id,
-                "url": f"/api/transform/image/{image_id}",
+                "url": f"api/transform/image/{image_id}",
                 "style": style
             })
     
@@ -142,8 +142,8 @@ async def transform_character(
             "success": True,
             "original_id": original_id,
             "image_id": result_id,
-            "image_url": f"/api/transform/image/{result_id}",
-            "original_url": f"/api/transform/original/{original_id}",
+            "image_url": f"api/transform/image/{result_id}",
+            "original_url": f"api/transform/original/{original_id}",
             "style": style
         }
     except Exception as e:
