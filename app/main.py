@@ -7,6 +7,7 @@ from app.config import settings
 from app.routers import transform
 
 app = FastAPI(
+    root_path="/demo",
     title=settings.APP_NAME,
     description="AI 기반 인물 사진 캐릭터화 서비스 - Stable Diffusion 연동",
     version=settings.APP_VERSION
