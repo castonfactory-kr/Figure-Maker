@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     PORT: int = 5000
     # ComfyUI API Configuration
     COMFYUI_BASE_URL: str = Field(
-        default="http://172.30.1.94:8000",
+        default="http://castonfactory.kr:8880",
         description="ComfyUI server base URL"
     )
     STABLE_DIFFUSION_API_KEY: str | None = None
