@@ -252,7 +252,7 @@
 
         async function checkServerHealth() {
             try {
-                const response = await fetch('/api/transform/health');
+                const response = await fetch('api/transform/health');
                 const data = await response.json();
                 return data.status === 'connected';
             } catch (error) {
@@ -291,7 +291,7 @@
                 formData.append('image', blob, 'photo.jpg');
                 formData.append('style', style);
 
-                const response = await fetch('/api/transform/character', {
+                const response = await fetch('api/transform/character', {
                     method: 'POST',
                     body: formData
                 });
