@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>F&P (Figure & Poto) - 스타일 선택</title>
-    <link rel="stylesheet" href="/static/kiosk.css">
+    <link rel="stylesheet" href="static/kiosk.css">
 </head>
 <body class="kiosk-body">
     <div class="kiosk-container">
@@ -100,13 +100,13 @@
         });
 
         backBtn.addEventListener('click', () => {
-            window.location.href = '/';
+            window.location.href = './';
         });
 
         nextBtn.addEventListener('click', () => {
             if (selectedStyle) {
                 sessionStorage.setItem('selectedStyle', selectedStyle);
-                window.location.href = '/preview';
+                window.location.href = 'preview';
             }
         });
     </script>
