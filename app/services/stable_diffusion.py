@@ -37,7 +37,7 @@ CHARACTER_STYLES = {
         "name_en": "Real (Bubble Head)",
         "description": "실사풍 큰 머리 캐릭터",
         "prompt": "full body portrait,bubble head,big head small body,realistic skin texture,photorealistic style,cute proportions,same person,same face,preserve original features,high definition,4k,high quality",
-        "denoise": 0.15  # 원본을 최대한 존중
+        "denoise": 0.10  # 원본을 최대한 존중
     },
     "semi_realistic": {
         "name": "반실사 (3D)",
