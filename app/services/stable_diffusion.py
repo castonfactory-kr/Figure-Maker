@@ -48,8 +48,8 @@ CHARACTER_STYLES = {
     "character": {
         "id": "character",
         "name": "치비 (넨도로이드)",
-        "prompt": "same person, same face, preserve original features, (Nendoroid style:1.5), (chibi:1.5), plastic texture, figurine, toy like, cute, small body, big head, (bubblehead:1.3), simple details, neutral expression, clean lines",
-        "denoise": 0.35
+        "prompt": "same person, same face, preserve original features, (Nendoroid style:1.2), (chibi:1.2), cute illustration, soft colors, detailed eyes, small body, big head, (bubblehead:1.3), simple shading, clean lines, (masculine features if man), (feminine features if woman)",
+        "denoise": 0.30
     }
 }
 
