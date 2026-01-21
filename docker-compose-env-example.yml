@@ -1,0 +1,17 @@
+# Docker Compose 환경 변수 예시
+# 서버의 docker-compose.yml에서 backend 서비스에 추가할 환경 변수
+
+environment:
+  # 필수: 애플리케이션 루트 경로
+  - APP_ROOT_PATH=/demo
+  
+  # ComfyUI 서버 URL (기본값이 있지만 명시적으로 설정 권장)
+  - COMFYUI_BASE_URL=http://172.30.1.94:8000
+  
+  # 선택: 디버그 모드
+  - DEBUG=false
+  
+  # 선택: 업로드 디렉토리 (기본값: uploads)
+  # - UPLOAD_DIR=uploads
+  # - GENERATED_IMAGES_DIR=generated_images
+  # - MAX_FILE_SIZE_MB=10
