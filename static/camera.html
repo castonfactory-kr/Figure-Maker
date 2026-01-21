@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>F&P (Figure & Poto) - CastOnFactory 사진 촬영</title>
-    <link rel="stylesheet" href="static/kiosk.css">
+    <link rel="stylesheet" href="/static/kiosk.css">
     <style>
         .camera-container {
             position: relative;
@@ -293,7 +293,7 @@
         nextBtn.addEventListener('click', () => {
             if (capturedImageData) {
                 sessionStorage.setItem('uploadedImage', capturedImageData);
-                window.location.href = './style.html';
+                window.location.href = '/style';
             }
         });
 

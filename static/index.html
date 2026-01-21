@@ -6,7 +6,7 @@
     <title>
       F&P (Figure & Poto) - CastOnFactory 생성형 AI 피규어 주문제작 서비스
     </title>
-    <link rel="stylesheet" href="static/kiosk.css" />
+    <link rel="stylesheet" href="/static/kiosk.css" />
     <style>
       .status-bar {
         position: fixed;
@@ -133,7 +133,7 @@
       nextBtn.addEventListener("click", () => {
         if (uploadedImageData) {
           sessionStorage.setItem("uploadedImage", uploadedImageData);
-          window.location.href = "./style.html";
+          window.location.href = "/style";
         }
       });
     </script>

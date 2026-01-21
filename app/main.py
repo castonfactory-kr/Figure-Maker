@@ -33,13 +33,46 @@ app.add_middleware(
 
 app.include_router(transform.router)
 
-# Static 파일 마운트
-app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+# Static 파일은 라우트보다 나중에 마운트 (라우트 우선순위)
 
 
 @app.get("/")
 async def root():
     return FileResponse(str(STATIC_DIR / "index.html"))
+
+
+@app.get("/style")
+async def style_page():
+    return FileResponse(str(STATIC_DIR / "style.html"))
+
+
+@app.get("/camera")
+async def camera_page():
+    return FileResponse(str(STATIC_DIR / "camera.html"))
+
+
+@app.get("/preview")
+async def preview_page():
+    return FileResponse(str(STATIC_DIR / "preview.html"))
+
+
+@app.get("/shipping")
+async def shipping_page():
+    return FileResponse(str(STATIC_DIR / "shipping.html"))
+
+
+@app.get("/payment")
+async def payment_page():
+    return FileResponse(str(STATIC_DIR / "payment.html"))
+
+
+@app.get("/printing")
+async def printing_page():
+    return FileResponse(str(STATIC_DIR / "printing.html"))
+
+
+# Static 파일 마운트 (라우트보다 나중에 마운트해야 라우트가 우선)
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 
 @app.get("/health")
@@ -65,8 +98,8 @@ async def api_info():
             "gallery": "GET /api/transform/gallery"
         },
         "description": "인물 사진을 업로드하여 다양한 스타일의 캐릭터 이미지로 변환하는 서비스입니다.",
-        "stable_diffusion": {
-            "base_url": settings.STABLE_DIFFUSION_BASE_URL,
-            "note": "Stable Diffusion WebUI API 서버가 실행 중이어야 합니다."
+        "comfyui": {
+            "base_url": settings.COMFYUI_BASE_URL,
+            "note": "ComfyUI 서버가 실행 중이어야 합니다."
         }
     }

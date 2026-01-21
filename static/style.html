@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>F&P (Figure & Poto) - 스타일 선택</title>
-    <link rel="stylesheet" href="static/kiosk.css">
+    <link rel="stylesheet" href="/static/kiosk.css">
 </head>
 <body class="kiosk-body">
     <div class="kiosk-container">
@@ -30,7 +30,7 @@
                 <div class="style-grid">
                     <div class="style-option" data-style="real_bubblehead">
                         <div class="style-image">
-                            <img src="static/images/style-real.jpg" alt="리얼 스타일" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <img src="/static/images/style-real.jpg" alt="리얼 스타일" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                             <span class="placeholder" style="display:none;">예시 이미지</span>
                         </div>
                         <h3>리얼 (버블헤드)</h3>
@@ -39,7 +39,7 @@
 
                     <div class="style-option" data-style="semi_realistic">
                         <div class="style-image">
-                            <img src="static/images/style-3d.jpg" alt="3D 스타일" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <img src="/static/images/style-3d.jpg" alt="3D 스타일" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                             <span class="placeholder" style="display:none;">예시 이미지</span>
                         </div>
                         <h3>반실사 (3D)</h3>
@@ -48,20 +48,11 @@
 
                     <div class="style-option" data-style="character">
                         <div class="style-image">
-                            <img src="static/images/style-character.jpg" alt="캐릭터 스타일" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <img src="/static/images/style-character.jpg" alt="캐릭터 스타일" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                             <span class="placeholder" style="display:none;">예시 이미지</span>
                         </div>
                         <h3>캐릭터</h3>
                         <p>캐릭터 스타일</p>
-                    </div>
-
-                    <div class="style-option" data-style="anime">
-                        <div class="style-image">
-                            <img src="static/images/style-anime.jpg" alt="애니메이션 스타일" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                            <span class="placeholder" style="display:none;">예시 이미지</span>
-                        </div>
-                        <h3>지브리</h3>
-                        <p>지브리 스타일</p>
                     </div>
                 </div>
             </div>
@@ -109,13 +100,13 @@
         });
 
         backBtn.addEventListener('click', () => {
-            window.location.href = './index.html';
+            window.location.href = '/';
         });
 
         nextBtn.addEventListener('click', () => {
             if (selectedStyle) {
                 sessionStorage.setItem('selectedStyle', selectedStyle);
-                window.location.href = './preview.html';
+                window.location.href = '/preview';
             }
         });
     </script>
