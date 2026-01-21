@@ -1,141 +1,304 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      F&P (Figure & Poto) - CastOnFactory 생성형 AI 피규어 주문제작 서비스
-    </title>
-    <link rel="stylesheet" href="static/kiosk.css" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F&P (Figure & Poto) - CastOnFactory 사진 촬영</title>
+    <link rel="stylesheet" href="static/kiosk.css">
     <style>
-      .status-bar {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 1rem 2rem;
-        background: #fef2f2;
-        border-top: 2px solid #fecaca;
-        color: #dc2626;
-        text-align: center;
-        font-size: 1rem;
-        z-index: 100;
-      }
-      .status-bar.hidden {
-        display: none;
-      }
+        .camera-container {
+            position: relative;
+            max-width: 640px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        #videoElement {
+            width: 100%;
+            display: block;
+            transform: scaleX(-1);
+        }
+        
+        #capturedImage {
+            width: 100%;
+            display: block;
+            transform: scaleX(-1);
+        }
+        
+        .countdown-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+        }
+        
+        .countdown-number {
+            font-size: 8rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            animation: pulse 1s ease-in-out;
+        }
+        
+        .countdown-text {
+            position: absolute;
+            bottom: 2rem;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 1.5rem;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1.2); opacity: 0; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.8; }
+        }
+        
+        .flash-overlay {
+            position: absolute;
+            inset: 0;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.1s;
+        }
+        
+        .flash-overlay.flash {
+            opacity: 1;
+        }
+        
+        .camera-error {
+            padding: 4rem 2rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
+        .camera-error .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .result-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 2rem;
+            background: #fef2f2;
+            border-top: 2px solid #fecaca;
+            color: #dc2626;
+            text-align: center;
+            font-size: 1rem;
+            z-index: 100;
+        }
+        
+        .status-bar.hidden {
+            display: none;
+        }
     </style>
-  </head>
-  <body class="kiosk-body">
+</head>
+<body class="kiosk-body">
     <div class="kiosk-container">
-      <header class="kiosk-header">
-        <h1>F&P (Figure & Poto)</h1>
-        <p>생성형 AI 피규어 주문제작 서비스</p>
-      </header>
+        <header class="kiosk-header">
+            <h1>F&P (Figure & Poto)</h1>
+            <p>생성형 AI 피규어 주문제작 서비스</p>
+        </header>
 
-      <div class="kiosk-card" style="max-width: 700px; margin: 0 auto">
-        <h2>인물 사진을 업로드해주세요</h2>
-
-        <div class="upload-zone" id="uploadZone">
-          <input type="file" id="imageInput" accept="image/*" hidden />
-          <div class="upload-content" id="uploadContent">
-            <div class="upload-icon">📷</div>
-            <p>클릭하거나 이미지를 드래그하세요</p>
-            <p class="hint">JPG, PNG 파일 (최대 10MB)</p>
-          </div>
-          <img id="previewImage" class="hidden" alt="Preview" />
+        <div class="kiosk-card" style="max-width: 700px; margin: 0 auto;">
+            <h2 id="titleText">카메라를 바라봐주세요</h2>
+            
+            <div class="camera-container" id="cameraContainer">
+                <video id="videoElement" autoplay playsinline></video>
+                <img id="capturedImage" class="hidden" alt="Captured photo">
+                
+                <div class="countdown-overlay hidden" id="countdownOverlay">
+                    <div class="countdown-number" id="countdownNumber">5</div>
+                    <div class="countdown-text" id="countdownText">5초 후에 촬영됩니다</div>
+                </div>
+                
+                <div class="flash-overlay" id="flashOverlay"></div>
+                <div class="result-badge hidden" id="resultBadge">촬영 완료</div>
+                
+                <div class="camera-error hidden" id="cameraError">
+                    <div class="icon">📷</div>
+                    <p>카메라에 접근할 수 없습니다</p>
+                    <p class="hint">카메라 권한을 허용해주세요</p>
+                </div>
+            </div>
+            
+            <canvas id="captureCanvas" style="display: none;"></canvas>
         </div>
-      </div>
 
-      <div class="kiosk-footer" style="max-width: 700px; margin: 0 auto">
-        <div></div>
-        <button class="kiosk-btn primary" id="nextBtn" disabled>
-          다음 단계로
-        </button>
-      </div>
+        <div class="kiosk-footer" style="max-width: 700px; margin: 0 auto;">
+            <button class="kiosk-btn secondary hidden" id="retakeBtn">
+                다시 찍기
+            </button>
+            <div id="startBtnContainer">
+                <button class="kiosk-btn primary" id="startBtn">
+                    촬영 시작
+                </button>
+            </div>
+            <button class="kiosk-btn primary hidden" id="nextBtn">
+                다음 단계로
+            </button>
+        </div>
     </div>
 
     <div class="status-bar hidden" id="statusBar">
-      ⚠️ Stable Diffusion 서버 연결 실패 - 캐릭터 변환 기능을 사용할 수 없습니다
+        ⚠️ Stable Diffusion 서버 연결 실패 - 캐릭터 변환 기능을 사용할 수 없습니다
     </div>
 
     <script>
-      const uploadZone = document.getElementById("uploadZone");
-      const imageInput = document.getElementById("imageInput");
-      const uploadContent = document.getElementById("uploadContent");
-      const previewImage = document.getElementById("previewImage");
-      const nextBtn = document.getElementById("nextBtn");
-      const statusBar = document.getElementById("statusBar");
+        const video = document.getElementById('videoElement');
+        const capturedImage = document.getElementById('capturedImage');
+        const canvas = document.getElementById('captureCanvas');
+        const countdownOverlay = document.getElementById('countdownOverlay');
+        const countdownNumber = document.getElementById('countdownNumber');
+        const countdownText = document.getElementById('countdownText');
+        const flashOverlay = document.getElementById('flashOverlay');
+        const resultBadge = document.getElementById('resultBadge');
+        const cameraError = document.getElementById('cameraError');
+        const titleText = document.getElementById('titleText');
+        const startBtn = document.getElementById('startBtn');
+        const startBtnContainer = document.getElementById('startBtnContainer');
+        const retakeBtn = document.getElementById('retakeBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const statusBar = document.getElementById('statusBar');
 
-      let uploadedImageData = null;
+        let stream = null;
+        let capturedImageData = null;
 
-      async function checkServerStatus() {
-        try {
-          const response = await fetch("api/transform/health");
-          const data = await response.json();
-          if (data.sd_server_status !== "connected") {
-            statusBar.classList.remove("hidden");
-          } else {
-            statusBar.classList.add("hidden");
-          }
-        } catch (error) {
-          statusBar.classList.remove("hidden");
-        }
-      }
-
-      checkServerStatus();
-
-      uploadZone.addEventListener("click", () => imageInput.click());
-
-      uploadZone.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        uploadZone.style.borderColor = "#7c3aed";
-      });
-
-      uploadZone.addEventListener("dragleave", () => {
-        uploadZone.style.borderColor = "";
-      });
-
-      uploadZone.addEventListener("drop", (e) => {
-        e.preventDefault();
-        uploadZone.style.borderColor = "";
-        const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith("image/")) {
-          handleFile(file);
-        }
-      });
-
-      imageInput.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          handleFile(file);
-        }
-      });
-
-      function handleFile(file) {
-        if (file.size > 10 * 1024 * 1024) {
-          alert("파일 크기는 10MB 이하여야 합니다.");
-          return;
+        async function checkServerStatus() {
+            try {
+                const response = await fetch('api/transform/health');
+                const data = await response.json();
+                if (data.sd_server_status !== 'connected') {
+                    statusBar.classList.remove('hidden');
+                } else {
+                    statusBar.classList.add('hidden');
+                }
+            } catch (error) {
+                statusBar.classList.remove('hidden');
+            }
         }
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          uploadedImageData = e.target.result;
-          previewImage.src = uploadedImageData;
-          previewImage.classList.remove("hidden");
-          uploadContent.classList.add("hidden");
-          uploadZone.classList.add("has-image");
-          nextBtn.disabled = false;
-        };
-        reader.readAsDataURL(file);
-      }
-
-      nextBtn.addEventListener("click", () => {
-        if (uploadedImageData) {
-          sessionStorage.setItem("uploadedImage", uploadedImageData);
-          window.location.href = "style";
+        async function initCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: 'user'
+                    },
+                    audio: false
+                });
+                video.srcObject = stream;
+                video.classList.remove('hidden');
+                cameraError.classList.add('hidden');
+            } catch (error) {
+                console.error('Camera error:', error);
+                video.classList.add('hidden');
+                cameraError.classList.remove('hidden');
+                startBtn.disabled = true;
+            }
         }
-      });
+
+        function startCountdown() {
+            startBtn.classList.add('hidden');
+            startBtnContainer.classList.add('hidden');
+            countdownOverlay.classList.remove('hidden');
+            
+            let count = 5;
+            countdownNumber.textContent = count;
+            countdownText.textContent = `${count}초 후에 촬영됩니다`;
+            
+            const interval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownNumber.textContent = count;
+                    countdownNumber.style.animation = 'none';
+                    countdownNumber.offsetHeight;
+                    countdownNumber.style.animation = 'pulse 1s ease-in-out';
+                    countdownText.textContent = `${count}초 후에 촬영됩니다`;
+                } else {
+                    clearInterval(interval);
+                    capturePhoto();
+                }
+            }, 1000);
+        }
+
+        function capturePhoto() {
+            countdownOverlay.classList.add('hidden');
+            
+            flashOverlay.classList.add('flash');
+            setTimeout(() => {
+                flashOverlay.classList.remove('flash');
+            }, 150);
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0);
+
+            capturedImageData = canvas.toDataURL('image/jpeg', 0.9);
+            capturedImage.src = capturedImageData;
+
+            video.classList.add('hidden');
+            capturedImage.classList.remove('hidden');
+            resultBadge.classList.remove('hidden');
+
+            titleText.textContent = '촬영이 완료되었습니다';
+            retakeBtn.classList.remove('hidden');
+            nextBtn.classList.remove('hidden');
+        }
+
+        function retakePhoto() {
+            capturedImage.classList.add('hidden');
+            resultBadge.classList.add('hidden');
+            video.classList.remove('hidden');
+            
+            titleText.textContent = '카메라를 바라봐주세요';
+            retakeBtn.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            startBtn.classList.remove('hidden');
+            startBtnContainer.classList.remove('hidden');
+            
+            capturedImageData = null;
+        }
+
+        startBtn.addEventListener('click', startCountdown);
+        retakeBtn.addEventListener('click', retakePhoto);
+
+        nextBtn.addEventListener('click', () => {
+            if (capturedImageData) {
+                sessionStorage.setItem('uploadedImage', capturedImageData);
+                window.location.href = 'style';
+            }
+        });
+
+        checkServerStatus();
+        initCamera();
     </script>
-  </body>
+</body>
 </html>
