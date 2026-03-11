@@ -36,6 +36,13 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.IMAGE_NAME }}:latest
 
+      - name: Debug host
+        run: |
+          echo "HOST length: ${#HOST_VAL}"
+          echo "PORT: ${{ secrets.PORT }}"
+        env:
+          HOST_VAL: ${{ secrets.HOST }}
+
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
         with:
