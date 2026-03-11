@@ -36,20 +36,6 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.IMAGE_NAME }}:latest
 
-      - name: Debug host detail
-        run: |
-          echo "HOST length: ${#HOST_VAL}"
-          echo "First char: ${HOST_VAL:0:1}"
-          echo "Last char: ${HOST_VAL: -1}"
-          # IP인지 도메인인지 확인 (첫 글자가 숫자면 IP)
-          if [[ "${HOST_VAL:0:1}" =~ [0-9] ]]; then
-            echo "Looks like IP address"
-          else
-            echo "Looks like domain name"
-          fi
-        env:
-          HOST_VAL: ${{ secrets.HOST }}
-
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
         with:
