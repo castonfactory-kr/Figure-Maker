@@ -4,18 +4,17 @@ from pydantic import BaseModel
 
 
 @dataclass
-class StableDiffusionConfig:
+class ZImageConfig:
     base_url: str
-    api_key: Optional[str]
-    default_model: str
-    default_sampler: str
+    default_strength: float
     default_steps: int
-    default_cfg_scale: float
+    default_guidance_scale: float
+    default_megapixels: float
 
 
 class TransformRequest(BaseModel):
-    style: str = "sd_character"
-    denoising_strength: float = 0.42
+    style: str = "real_bubblehead"
+    strength: float = 0.5
 
 
 class TransformResponse(BaseModel):
@@ -30,7 +29,6 @@ class TransformResponse(BaseModel):
 class HealthResponse(BaseModel):
     status: str
     message: Optional[str] = None
-    models_available: Optional[int] = None
     base_url: Optional[str] = None
 
 

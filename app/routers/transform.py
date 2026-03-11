@@ -6,7 +6,7 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from fastapi.responses import FileResponse
 
 from app.config import settings
-from app.services.stable_diffusion import sd_service, CHARACTER_STYLES
+from app.services.zimage import zimage_service, CHARACTER_STYLES
 
 router = APIRouter(prefix="/api/transform", tags=["transform"])
 
@@ -38,14 +38,14 @@ def get_mime_from_extension(ext: str) -> str:
 @router.get("/styles")
 async def list_styles():
     return {
-        "styles": sd_service.get_available_styles(),
-        "recommended_strength": sd_service.get_recommended_strength()
+        "styles": zimage_service.get_available_styles(),
+        "recommended_strength": zimage_service.get_recommended_strength()
     }
 
 
 @router.get("/health")
 async def check_sd_connection():
-    return await sd_service.check_connection()
+    return await zimage_service.check_connection()
 
 
 @router.get("/gallery")
@@ -90,7 +90,7 @@ async def get_gallery():
 async def transform_character(
     image: UploadFile = File(...),
     style: str = Form(default="real_bubblehead"),
-    denoising_strength: float | None = Form(default=None)
+    strength: float | None = Form(default=None)
 ):
     if not image.content_type or not image.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="파일은 이미지여야 합니다")
@@ -117,10 +117,10 @@ async def transform_character(
         await f.write(json.dumps({"ext": original_ext, "mime": image.content_type}))
     
     try:
-        result_bytes = await sd_service.transform_to_character(
+        result_bytes = await zimage_service.transform_to_character(
             image_bytes, 
             style=style,
-            denoising_strength=denoising_strength
+            strength=strength
         )
         
         result_id = str(uuid.uuid4())
@@ -134,7 +134,7 @@ async def transform_character(
         async with aiofiles.open(result_meta_path, "w") as f:
             await f.write(json.dumps({
                 "style": style,
-                "denoising_strength": denoising_strength,
+                "strength": strength,
                 "original_id": original_id
             }))
         

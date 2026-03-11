@@ -19,7 +19,7 @@ ROOT_PATH = os.getenv("APP_ROOT_PATH", "")
 app = FastAPI(
     root_path=ROOT_PATH,  # 환경변수로 제어 : 제발 더 나은 방법을 찾을것.
     title=settings.APP_NAME,
-    description="AI 기반 인물 사진 캐릭터화 서비스 - Stable Diffusion 연동",
+    description="AI 기반 인물 사진 캐릭터화 서비스 - Z-Image 연동",
     version=settings.APP_VERSION
 )
 
@@ -98,8 +98,8 @@ async def api_info():
             "gallery": "GET /api/transform/gallery"
         },
         "description": "인물 사진을 업로드하여 다양한 스타일의 캐릭터 이미지로 변환하는 서비스입니다.",
-        "comfyui": {
-            "base_url": settings.COMFYUI_BASE_URL,
-            "note": "ComfyUI 서버가 실행 중이어야 합니다."
+        "zimage": {
+            "base_url": settings.ZIMAGE_BASE_URL,
+            "note": "Z-Image 서버가 실행 중이어야 합니다."
         }
     }

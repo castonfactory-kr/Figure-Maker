@@ -8,18 +8,22 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
-    APP_NAME: str = "Character AI Service"
-    APP_VERSION: str = "1.0.0"
+    APP_NAME: str = "Cast on factory AI"
+    APP_VERSION: str = "2.0.0"
     DEBUG: bool = False
     
     HOST: str = "0.0.0.0"
     PORT: int = 5000
-    # ComfyUI API Configuration
-    COMFYUI_BASE_URL: str = Field(
-        default="http://castonfactory.kr:8880",
-        description="ComfyUI server base URL"
+    
+    # Z-Image API Configuration
+    ZIMAGE_BASE_URL: str = Field(
+        default="http://172.30.1.94:8088",
+        description="Z-Image server base URL"
     )
-    STABLE_DIFFUSION_API_KEY: str | None = None
+    ZIMAGE_MEGAPIXELS: float = Field(
+        default=1.0,
+        description="Output image megapixels for Z-Image"
+    )
     
     UPLOAD_DIR: str = "uploads"
     GENERATED_IMAGES_DIR: str = "generated_images"
