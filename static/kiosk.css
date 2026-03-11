@@ -5,10 +5,10 @@
 }
 
 :root {
-    --primary: #7c3aed;
-    --primary-light: #a78bfa;
-    --primary-dark: #5b21b6;
-    --accent: #ec4899;
+    --primary: #ffdf48;
+    --primary-light: #ffe97a;
+    --primary-dark: #d4a017;
+    --accent: #ea580c;
     --bg-main: #fefefe;
     --bg-cream: #faf8f5;
     --bg-beige: #f5f0e8;
@@ -21,8 +21,8 @@
     --shadow: rgba(0, 0, 0, 0.08);
     --shadow-lg: rgba(0, 0, 0, 0.12);
     --success: #10b981;
-    --pastel-pink: #fce7f3;
-    --pastel-purple: #ede9fe;
+    --pastel-pink: #fef9e7;
+    --pastel-purple: #fef3c7;
     --pastel-blue: #dbeafe;
     --pastel-mint: #d1fae5;
 }
@@ -48,7 +48,7 @@ body.kiosk-body {
 
 .kiosk-header {
     text-align: center;
-    padding: 1rem 0;
+    padding: 0.5rem 0;
 }
 
 .kiosk-header h1 {
@@ -59,6 +59,16 @@ body.kiosk-body {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 0.5rem;
+}
+
+.kiosk-header .logo-img {
+    max-height: 180px;
+    width: auto;
+    object-fit: contain;
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
+    background-clip: unset;
 }
 
 .kiosk-header p {
@@ -284,7 +294,7 @@ body.kiosk-body {
 
 .kiosk-btn.primary:hover:not(:disabled) {
     transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+    box-shadow: 0 10px 30px rgba(255, 223, 72, 0.4);
 }
 
 .kiosk-btn.primary:disabled {
