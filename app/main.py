@@ -36,6 +36,11 @@ app.include_router(transform.router)
 # Static 파일은 라우트보다 나중에 마운트 (라우트 우선순위)
 
 
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse(str(STATIC_DIR / "favicon.svg"), media_type="image/svg+xml")
+
+
 @app.get("/")
 async def root():
     return FileResponse(str(STATIC_DIR / "index.html"))
