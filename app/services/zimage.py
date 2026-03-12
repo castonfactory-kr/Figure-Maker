@@ -103,7 +103,7 @@ class ZImageService:
         - Node 23: EmptyLatentImage (712x1072)
         """
         if seed is None:
-            seed = 20260112  # 🍀 행운의 시드
+            seed = 7777777  # 🍀 럭키 세븐의 세븐 승
 
         return {
             # UNETLoader (Node 1)
