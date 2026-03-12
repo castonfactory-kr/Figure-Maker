@@ -131,10 +131,31 @@
         reader.readAsDataURL(file);
       }
 
-      nextBtn.addEventListener("click", () => {
+      nextBtn.addEventListener("click", async () => {
         if (uploadedImageData) {
-          sessionStorage.setItem("uploadedImage", uploadedImageData);
-          window.location.href = "style";
+          nextBtn.disabled = true;
+          nextBtn.textContent = "업로드 중...";
+          try {
+            const blob = await fetch(uploadedImageData).then(r => r.blob());
+            const formData = new FormData();
+            formData.append("image", blob, "photo.jpg");
+
+            const response = await fetch("api/transform/upload-temp", {
+              method: "POST",
+              body: formData
+            });
+
+            if (!response.ok) throw new Error("업로드 실패");
+
+            const data = await response.json();
+            sessionStorage.setItem("uploadedImageId", data.image_id);
+            sessionStorage.setItem("uploadedImageUrl", data.image_url);
+            window.location.href = "style";
+          } catch (err) {
+            alert("이미지 업로드에 실패했습니다: " + err.message);
+            nextBtn.disabled = false;
+            nextBtn.textContent = "다음 단계로";
+          }
         }
       });
     </script>

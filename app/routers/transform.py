@@ -47,6 +47,43 @@ async def check_sd_connection():
     return await zimage_service.check_connection()
 
 
+
+@router.post("/upload-temp")
+async def upload_temp_image(
+    image: UploadFile = File(...)
+):
+    """임시 이미지 업로드 (sessionStorage 용량 초과 방지)"""
+    if not image.content_type or not image.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="파일은 이미지여야 합니다")
+
+    image_bytes = await image.read()
+
+    max_size = settings.MAX_FILE_SIZE_MB * 1024 * 1024
+    if len(image_bytes) > max_size:
+        raise HTTPException(
+            status_code=400,
+            detail=f"이미지 크기는 {settings.MAX_FILE_SIZE_MB}MB 이하여야 합니다"
+        )
+
+    ext = get_extension_from_mime(image.content_type)
+    image_id = str(uuid.uuid4())
+    filename = f"{image_id}{ext}"
+    filepath = os.path.join(settings.UPLOAD_DIR, filename)
+
+    async with aiofiles.open(filepath, "wb") as f:
+        await f.write(image_bytes)
+
+    meta_path = os.path.join(settings.UPLOAD_DIR, f"{image_id}.json")
+    async with aiofiles.open(meta_path, "w") as f:
+        await f.write(json.dumps({"ext": ext, "mime": image.content_type}))
+
+    return {
+        "success": True,
+        "image_id": image_id,
+        "image_url": f"api/transform/original/{image_id}"
+    }
+
+
 @router.get("/gallery")
 async def get_gallery():
     images = []

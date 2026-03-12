@@ -82,9 +82,9 @@
 
         let selectedStyle = null;
 
-        const imageData = sessionStorage.getItem('uploadedImage');
-        if (imageData) {
-            uploadedImage.src = imageData;
+        const imageUrl = sessionStorage.getItem('uploadedImageUrl');
+        if (imageUrl) {
+            uploadedImage.src = imageUrl;
             uploadedImage.classList.remove('hidden');
         } else {
             uploadedImage.classList.add('hidden');
