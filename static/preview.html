@@ -309,16 +309,8 @@
 
             } catch (error) {
                 console.error('Generation error:', error);
-                
-                /* === BYPASS FOR TESTING - Show uploaded image instead === */
-                showImage(uploadedImage);
-                sessionStorage.setItem('generatedImage', uploadedImage);
-                /* === END BYPASS === */
-                
-                /* === UNCOMMENT FOR PRODUCTION ===
                 showPlaceholder();
                 showError(error.message || '이미지 생성 중 오류가 발생했습니다');
-                === END PRODUCTION CODE === */
             }
 
             isGenerating = false;

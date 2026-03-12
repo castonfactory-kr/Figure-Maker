@@ -38,8 +38,7 @@ def get_mime_from_extension(ext: str) -> str:
 @router.get("/styles")
 async def list_styles():
     return {
-        "styles": zimage_service.get_available_styles(),
-        "recommended_strength": zimage_service.get_recommended_strength()
+        "styles": zimage_service.get_available_styles()
     }
 
 
@@ -89,8 +88,7 @@ async def get_gallery():
 @router.post("/character")
 async def transform_character(
     image: UploadFile = File(...),
-    style: str = Form(default="real_bubblehead"),
-    strength: float | None = Form(default=None)
+    style: str = Form(default="real_bubblehead")
 ):
     if not image.content_type or not image.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="파일은 이미지여야 합니다")
@@ -120,7 +118,6 @@ async def transform_character(
         result_bytes = await zimage_service.transform_to_character(
             image_bytes, 
             style=style,
-            strength=strength
         )
         
         result_id = str(uuid.uuid4())
@@ -134,7 +131,6 @@ async def transform_character(
         async with aiofiles.open(result_meta_path, "w") as f:
             await f.write(json.dumps({
                 "style": style,
-                "strength": strength,
                 "original_id": original_id
             }))
         
